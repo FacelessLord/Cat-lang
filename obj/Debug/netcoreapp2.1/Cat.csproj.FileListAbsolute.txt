@@ -1,0 +1,14 @@
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/bin/Debug/netcoreapp2.1/Cat.deps.json
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/bin/Debug/netcoreapp2.1/Cat.runtimeconfig.json
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/bin/Debug/netcoreapp2.1/Cat.runtimeconfig.dev.json
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/bin/Debug/netcoreapp2.1/Cat.dll
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/bin/Debug/netcoreapp2.1/Cat.pdb
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/Debug/netcoreapp2.1/Cat.csprojAssemblyReference.cache
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/Debug/netcoreapp2.1/Cat.csproj.CoreCompileInputs.cache
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/Debug/netcoreapp2.1/Cat.AssemblyInfoInputs.cache
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/Debug/netcoreapp2.1/Cat.AssemblyInfo.cs
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/Debug/netcoreapp2.1/Cat.dll
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/Debug/netcoreapp2.1/Cat.pdb
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/bin/Debug/netcoreapp2.1/CalculatorConsole.dll
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/bin/Debug/netcoreapp2.1/CalculatorConsole.pdb
+/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/Debug/netcoreapp2.1/Cat.csproj.CopyComplete
