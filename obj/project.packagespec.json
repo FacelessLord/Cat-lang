@@ -1,10 +1,10 @@
 ﻿{
   "version": "1.0.0",
   "restore": {
-    "projectUniqueName": "/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/Cat.csproj",
+    "projectUniqueName": "/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat-lang/Cat.csproj",
     "projectName": "Cat",
-    "projectPath": "/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/Cat.csproj",
-    "outputPath": "/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat/obj/",
+    "projectPath": "/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat-lang/Cat.csproj",
+    "outputPath": "/home/lord_faceless/Desktop/MatMex/RiderProjects/CalculatorConsole/Cat-lang/obj/",
     "projectStyle": "PackageReference",
     "fallbackFolders": [
       "/usr/share/dotnet/sdk/NuGetFallbackFolder"

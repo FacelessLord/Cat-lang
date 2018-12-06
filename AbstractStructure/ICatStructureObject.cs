@@ -10,31 +10,39 @@ namespace Cat.AbstractStructure
 		/// </summary>
 		/// <returns> LinkedList that contains all values of Structure object</returns>
 		public abstract LinkedList<object> ToMemoryBlock();
-		protected int Modifiers;
+		public int _modifiers;
 
 		public CatStructureObject(params Modifier[] modifiers)
 		{
-			Modifiers = ModifierHandler.Compute(modifiers);
+			_modifiers = ModifierHandler.Compute(modifiers);
 		}
 
 		public bool IsField()
 		{
-			return ModifierHandler.IsField(Modifiers);
+			return ModifierHandler.IsField(_modifiers);
 		}
 
 		public bool IsMethod()
 		{
-			return ModifierHandler.IsMethod(Modifiers);
+			return ModifierHandler.IsMethod(_modifiers);
 		}
 		public bool IsStatic()
 		{
-			return ModifierHandler.IsStatic(Modifiers);
+			return ModifierHandler.IsStatic(_modifiers);
 		}
 		public bool IsFinal()
 		{
-			return ModifierHandler.IsFinal(Modifiers);
+			return ModifierHandler.IsFinal(_modifiers);
 		}
 
-		public abstract CatStructureObject ReadFromHeap(int startIndex);
+		public static CatStructureObject ReadFromHeap(int startIndex)
+		{
+			return ReadFromHeapWithIndex(startIndex).obj;
+		}
+
+		public static (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }

@@ -1,8 +1,10 @@
+using System;
+using System.Collections.Generic;
 using Cat.Structure;
 
 namespace Cat.AbstractStructure
 {
-	public abstract class CatProperty : CatStructureObject
+	public abstract class CatProperty : CatStructureObject, ICloneable
 	{
 		/// <summary>
 		/// Name of the property
@@ -13,5 +15,17 @@ namespace Cat.AbstractStructure
 		{
 			_name = name;
 		}
+
+		public CatField ToField()
+		{
+			return this as CatField;
+		}
+		
+		public CatMethod ToMethod()
+		{
+			return this as CatMethod;
+		}
+
+		public abstract object Clone();
 	}
 }

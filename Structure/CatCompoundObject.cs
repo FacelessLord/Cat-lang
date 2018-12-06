@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cat.AbstractStructure;
+using Cat.Exceptions;
 using static Cat.CatCore;
 
 namespace Cat.Structure
@@ -17,12 +19,12 @@ namespace Cat.Structure
 		/// <summary>
 		/// An Array of properties of this object
 		/// </summary>
-		private CatProperty[] _properties;
+		public CatProperty[] _properties;
 		
 		/// <summary>
 		/// Parent class for inheritance
 		/// </summary>
-		private CatClass _parent;
+		public string _parent;
 		
 		public CatCompoundObject(string type,params CatProperty[] properties) : base(type)
 		{
@@ -30,7 +32,7 @@ namespace Cat.Structure
 			_properties = properties;
 		}
 
-		public void SetParent(CatClass parent)
+		public void SetParent(string parent)
 		{
 			_parent = parent;
 		}
@@ -41,7 +43,7 @@ namespace Cat.Structure
 			block.AddLast("|c" + _type);
 			if (_parent != null)
 			{
-				block.AddLast("|P" + _parent._name);
+				block.AddLast("|P" + _parent);
 			}
 			else
 			{
@@ -70,6 +72,48 @@ namespace Cat.Structure
 		public CatProperty GetProperty(string name)
 		{
 			return _properties.FirstOrDefault(property => property._name == name);
+		}
+		
+		public new static (CatCompoundObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
+		{
+			try
+			{
+				var ctype =(string) Heap[startIndex];
+				var pparent = (string) Heap[startIndex + 1];
+				var properties = new List<CatProperty>();
+				int j = 0;
+				while (!(Heap[startIndex + 2 + j] is string entry) || entry.StartsWith("|f")|| entry.StartsWith("|m"))
+				{
+					var propertyInitializer = (string)Heap[startIndex + 2 + j];
+					if (propertyInitializer.StartsWith("|f"))
+					{
+						var propIndex = CatField.ReadFromHeapWithIndex(startIndex + 2 + j);
+						j += propIndex.nextIndex;
+						properties.Add(propIndex.obj);
+					}
+					else
+					{
+						var propIndex = CatMethod.ReadFromHeapWithIndex(startIndex + 2 + j);
+						j += propIndex.nextIndex;
+						properties.Add(propIndex.obj);
+					}
+				}
+
+				var type = ctype.Substring(2);
+				var parentName = pparent.Substring(2);
+				var parent = "void";
+				if (parentName != "|")
+				{
+					parent = parentName;
+				}
+				var obj = new CatCompoundObject(type, properties.ToArray()){_parent = parent};
+			
+				return (obj,startIndex+3+j);
+			}
+			catch (Exception e)
+			{
+				throw new HeapOrderingException();
+			}
 		}
 	}
 }

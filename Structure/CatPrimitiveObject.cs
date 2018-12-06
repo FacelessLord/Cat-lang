@@ -1,9 +1,12 @@
+using System;
 using System.Collections.Generic;
 using Cat.AbstractStructure;
+using Cat.Exceptions;
 using static Cat.CatCore;
 
 namespace Cat.Structure
 {
+	/// <inheritdoc />
 	/// <summary>
 	/// Wrapper class for Cat objects
 	/// </summary>
@@ -16,7 +19,7 @@ namespace Cat.Structure
 		/// <summary>
 		/// Either value of primitive type or link to the object
 		/// </summary>
-		private object _value;
+		public object _value;
 		
 		public CatPrimitiveObject(string type,object value) : base(type)
 		{
@@ -32,6 +35,22 @@ namespace Cat.Structure
 			block.AddLast("o|");// end of the object
 
 			return block;
+		}
+		
+		public new static (CatPrimitiveObject obj, int nexIndex) ReadFromHeapWithIndex(int startIndex)
+		{
+			try
+			{
+				var ptype = Heap[startIndex];
+				var value = Heap[startIndex + 1];
+				var type = ((string) ptype).Substring(2);
+				var obj = new CatPrimitiveObject(type,value);
+				return (obj, startIndex + 2);
+			}
+			catch (Exception e)
+			{
+				throw new HeapOrderingException();
+			}
 		}
 	}
 }

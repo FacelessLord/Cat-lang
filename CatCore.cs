@@ -49,15 +49,17 @@ namespace Cat
         
         private static void Main(string[] args)
         {
+            Types.Add("Test",0);
             var f1 = new CatField("f1","int",2,Static,Final,Field);
             var f2 = new CatField("f2","angle",2,Final,Field);
             var m1 = new CatMethod("m1(int k, string l)","int","Test",4,Static,Method);
             var m2 = new CatMethod("m2(angle k, double l)","string","Test",8,Final,Method);
-            var met = new CatCompoundObject("int",f1,f2,m1,m2);
-            var met2 = new CatPrimitiveObject("float",2.0f);
-            Heap.AddRange(met.ToMemoryBlock());
-            Heap.AddRange(met2.ToMemoryBlock());
+            var c1 = new CatClass("Test",f1,f2,m1,m2);
+            Heap.AddRange(c1.ToMemoryBlock());
+            var o1 = c1.CreateObjectFromClass();
+            Heap.AddRange(o1.ToMemoryBlock());
             Console.WriteLine(EMath.ArrayToString(Heap.ToArray()));
+            Console.WriteLine(o1.GetProperty("f1").ToField()._modifiers);
         }
 
         //Fieldname = 2 :: field is equal to 2
@@ -82,7 +84,12 @@ namespace Cat
         /// <summary>
         /// Fully loaded class files
         /// </summary>
-        public static readonly Dictionary<string,string[]> Classes = new Dictionary<string,string[]>();
+        public static readonly Dictionary<string,string[]> ClassFiles = new Dictionary<string,string[]>();
+//        
+//        /// <summary>
+//        /// Fully loaded class files
+//        /// </summary>
+//        public static readonly Dictionary<string,CatClass> Classes = new Dictionary<string,CatClass>();
         
         /// <summary>
         /// Method that finds index of given type in heap

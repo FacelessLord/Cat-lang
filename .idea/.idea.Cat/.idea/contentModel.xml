@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ContentModelStore">
+    <e p="$APPLICATION_CONFIG_DIR$/extensions" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.2/system/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/.Rider2018.2/system/resharper-host/local/Transient/ReSharperHost/v182/SolutionCaches/_Cat-lang.-1940649549.00" t="ExcludeRecursive" />
+    <e p="$PROJECT_DIR$" t="IncludeRecursive">
+      <e p="AbstractStructure" t="Include">
+        <e p="CatObject.cs" t="Include" />
+        <e p="CatProperty.cs" t="Include" />
+        <e p="ICatStructureObject.cs" t="Include" />
+        <e p="Modifier.cs" t="Include" />
+      </e>
+      <e p="Cat.csproj" t="IncludeRecursive" />
+      <e p="CatClassLoader.cs" t="Include" />
+      <e p="CatCore.cs" t="Include" />
+      <e p="CatObjectLoader.cs" t="Include" />
+      <e p="ExceptionHandler.cs" t="Include" />
+      <e p="HeapHandler.cs" t="Include" />
+      <e p="LICENSE.md" t="Include" />
+      <e p="ObjectHandler.cs" t="Include" />
+      <e p="README.md" t="Include" />
+      <e p="Structure" t="Include">
+        <e p="CatClass.cs" t="Include" />
+        <e p="CatCompoundObject.cs" t="Include" />
+        <e p="CatField.cs" t="Include" />
+        <e p="CatMethod.cs" t="Include" />
+        <e p="CatPrimitiveObject.cs" t="Include" />
+      </e>
+      <e p="bin" t="ExcludeRecursive" />
+      <e p="obj" t="ExcludeRecursive">
+        <e p="Debug" t="Include">
+          <e p="netcoreapp2.1" t="Include">
+            <e p="Cat.AssemblyInfo.cs" t="Include" />
+          </e>
+        </e>
+      </e>
+      <e p="packages" t="ExcludeRecursive" />
+      <e p="tst.cls" t="Include" />
+      <e p="tst2.cls" t="Include" />
+    </e>
+  </component>
+</project>

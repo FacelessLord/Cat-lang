@@ -2,7 +2,7 @@ using System;
 
 namespace Cat
 {
-	public class ExceptionHandler
+	public static class ExceptionHandler
 	{
 		
 		/// <summary>
