@@ -74,6 +74,10 @@ namespace Cat.Structure
 			return block;
 		}
 
+		/// <summary>
+		/// Method
+		/// </summary>
+		/// <returns></returns>
 		public CatCompoundObject CreateObjectFromClass()
 		{
 			var newProperties = new CatProperty[_properties.Length];
