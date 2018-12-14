@@ -40,7 +40,7 @@ namespace Cat
         /// <summary>
         /// Link-Zero
         /// </summary>
-        public const int L0 = -1;
+        public const int L0 = -1000;
 
         /// <summary>
         /// Value-Zero
@@ -49,21 +49,19 @@ namespace Cat
         
         private static void Main(string[] args)
         {
-            Types.Add("Test",0);
-            var f1 = new CatField("f1","int",2,Static,Final,Field);
-            var f2 = new CatField("f2","angle",2,Final,Field);
-            var m1 = new CatMethod("m1(int k, string l)","int","Test",4,Static,Method);
-            var m2 = new CatMethod("m2(angle k, double l)","string","Test",8,Final,Method);
-            var c1 = new CatClass("Test",f1,f2,m1,m2);
-            Heap.AddRange(c1.ToMemoryBlock());
+            Console.WriteLine(V0 == "V\0");
+            var clazzIndex = CatClassLoader.LoadClassFile("tst.cls");
+            var c1 = clazzIndex.clazz;
+            //LoadListToHeap(c1.ToMemoryBlock());
             var o1 = c1.CreateObjectFromClass();
-            Heap.AddRange(o1.ToMemoryBlock());
+            LoadListToHeap(o1.ToMemoryBlock());
             Console.WriteLine(EMath.ArrayToString(Heap.ToArray()));
-            Console.WriteLine(o1.GetProperty("f1").ToField()._modifiers);
+            o1.GetProperty("i").ToField()._value = 7;
+            Console.WriteLine(o1.GetProperty("i").ToField()._value);
         }
 
         //Fieldname = 2 :: field is equal to 2
-        //Fieldname& = 2 :: field is equal to an object on index 2 :: 2 is a link
+        //Fieldname = &2 :: field is equal to an object on index 2 :: 2 is a link
         //add an option to try to find exact copies
 
         /// <summary>

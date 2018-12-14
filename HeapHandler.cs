@@ -75,5 +75,52 @@ namespace Cat
 			Heap.AddRange(list);
 			return ret;
 		}
+		
+		public static int LoadListToHeap(LinkedList<object> list)
+		{
+			if (DoesHeapContainSpaces)
+			{
+				var bestZeroInARow = 0;
+				var bestZeroIndex = 0;
+				var zeroInARow = 0;
+				var zeroIndex = 0;
+				for (var i = 0; i < Heap.Count; i++)
+				{
+					if (Heap[i] is string k && k == H0)
+					{
+						if (zeroInARow == 0)
+							zeroIndex = i;
+						zeroInARow += 1;
+						if (bestZeroInARow < zeroInARow)
+						{
+							bestZeroIndex = zeroIndex;
+							bestZeroInARow = zeroInARow;
+						}
+					}
+					else
+					{
+						zeroInARow = 0;
+						zeroIndex = 0;
+					}
+				}
+
+				if (bestZeroInARow >= list.Count)
+				{
+					var i = 0;
+					var en = list.GetEnumerator();
+					while (en.MoveNext())
+					{
+						Heap[bestZeroIndex + i] = en.Current;
+						i++;
+					}
+
+					en.Dispose();
+					return bestZeroIndex;
+				}
+			}
+			var ret = Heap.Count;
+			Heap.AddRange(list);
+			return ret;
+		}
 	}
 }

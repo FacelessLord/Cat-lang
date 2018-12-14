@@ -56,7 +56,8 @@ namespace Cat.Structure
 			var fullSign = ProcessSignature(rawSignature);
 			_name = fullSign.Item1;
 			_signature = fullSign.Item2;
-			_returnType = GetTypeIndex(returnType);
+			if(returnType != "")
+				_returnType = GetTypeIndex(returnType);
 			_class = linkClass;
 			_line = line;
 		}
@@ -131,9 +132,8 @@ namespace Cat.Structure
 
 			for (var i = 0; i < singleArguments.Length; i++)
 			{
-				types[i] = GetTypeIndex(singleArguments[i].Trim().Split()[0]);
+				types[i] = GetTypeIndex(singleArguments[i].Trim().Split()[0].Trim());
 			}
-
 			var name = rawSign.Trim().Substring(0, openParenthese).Trim();
 
 			return (name, types);

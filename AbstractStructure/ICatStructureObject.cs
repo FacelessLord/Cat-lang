@@ -34,6 +34,10 @@ namespace Cat.AbstractStructure
 		{
 			return ModifierHandler.IsFinal(_modifiers);
 		}
+		public bool IsConstructor()
+		{
+			return ModifierHandler.IsConstructor(_modifiers);
+		}
 
 		public static CatStructureObject ReadFromHeap(int startIndex)
 		{

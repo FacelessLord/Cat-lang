@@ -1,7 +1,6 @@
 class Test
 {
-
-    constructor : Test(int a) ~ Test ;
+    constructor : Test(int a);
     static field : i ~ int = 2 ;
     field : j ~ string = 5 ;
     method : k(int a, string b) ~ angle ;

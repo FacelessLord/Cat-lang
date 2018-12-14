@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using Cat.AbstractStructure;
+using Cat.Structure;
 using static Cat.CatCore;
 
 namespace Cat
@@ -12,7 +15,7 @@ namespace Cat
         /// </summary>
         /// <param name="className"> Name of class to load</param>
         /// <returns></returns>
-        public static int LoadClassFile(string className)
+        public static (CatClass clazz,int index) LoadClassFile(string className)
         {
             var lines = File.ReadAllLines(className);
 
@@ -50,22 +53,12 @@ namespace Cat
             }
 
             search:
-//            Console.WriteLine("Class: "+ClassName);
+            
             if (ClassName != "")
             {
                 var bracesNesting = 0;
-                var nonStaticFields =
-                    new List<(int modifiers, string type, string name, object value)
-                    >(); // field : fieldName ~ fieldType : ;
-                var staticFields =
-                    new List<(int modifiers, string type, string name, object value)
-                    >(); // static field : fieldName ~ fieldType : = value;
-                var nonStaticMethods =
-                    new List<(int modifiers, string signature, string link)
-                    >(); // method : methodName(int a, string b) ~ returnType :
-                var staticMethods =
-                    new List<(int modifiers, string signature, string link)
-                    >(); // static method : methodName(int a, string b) ~ returnType :
+
+                var classProperties = new List<CatProperty>();
 
                 int modifiers = 0;
                 for (var i = index.i; i < lines.Length; i++)
@@ -84,12 +77,12 @@ namespace Cat
 
                         if (words[j - 1] == ":") //Static method : methodName ( int a , string b ) ~ returnType
                         {
-                            if ((modifiers >> 1) % 2 == 1) //Method
+                            if (ModifierHandler.IsMethod(modifiers)) //Method
                             {
 
                                 int k = j;
                                 string signature = "";
-                                while (k < words.Length && words[k] != ":")
+                                while (k < words.Length && words[k] != ";")
                                 {
                                     signature += words[k] + " ";
                                     k++;
@@ -97,91 +90,79 @@ namespace Cat
 
                                 signature = signature.Trim();
                                 string link = className + ":" + i; //i-th line of file:className.cls
-                                if ((modifiers >> 2) % 2 == 1) //Static
-                                {
-                                    staticMethods.Add((modifiers, signature, link));
-                                }
-                                else
-                                {
-                                    nonStaticMethods.Add((modifiers, signature, link));
-                                }
-
+                                string[] sign = signature.Split("~");
+                                var rawMethod = new CatMethod(sign[0].Trim(), sign[1].Trim(), className.Trim(), i) {_modifiers = modifiers};
+                                classProperties.Add(rawMethod);
+                                
                                 j = k;
+                                modifiers = 0;
                                 continue;
                             }
-                            else
-                            if ((modifiers % 2) == 1) // field
+                            if (ModifierHandler.IsConstructor(modifiers)) //Method
+                            {
+
+                                int k = j;
+                                string signature = "";
+                                while (k < words.Length && words[k] != ";")
+                                {
+                                    signature += words[k] + " ";
+                                    k++;
+                                }
+
+                                signature = signature.Trim();
+                                string link = className + ":" + i; //i-th line of file:className.cls
+                                var rawMethod = new CatConstructor(signature,"", className.Trim(), i) {_modifiers = modifiers};
+                                classProperties.Add(rawMethod);
+                                
+                                j = k;
+                                modifiers = 0;
+                                continue;
+                            }
+                            if (ModifierHandler.IsField(modifiers)) // field
                             {
 
                                 var name = words[j];
                                 var type = words[j + 2];
 
-                                if ((modifiers >> 2) % 2 == 1) //Static
+                                //words[i+3] == ":"
+                                //words[i+4] == "="
+                                //words[i+5] == "2"//value
+                                var k = j + 4;
+                                var expr = "";
+                                while (k < words.Length && words[k] != ";")
                                 {
-                                    //words[i+3] == ":"
-                                    //words[i+4] == "="
-                                    //words[i+5] == "2"//value
-                                    var k = j + 4;
-                                    var expr = "";
-                                    while (k < words.Length && words[k] != ";")
-                                    {
-                                        expr += words[k] + " ";
-                                        k++;
-                                    }
-
-                                    if (expr == "")
-                                        expr = V0;
-
-                                    staticFields.Add((modifiers, type, name, expr.Trim()));
-                                    j += 4;
-                                    continue;
-                                }
-                                else
-                                {
-                                    var k = j + 4;
-                                    var expr = "";
-                                    try
-                                    {
-                                        while (k < words.Length && words[k] != ";")
-                                        {
-                                            expr += words[k] + " ";
-                                            k++;
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Console.WriteLine("Exception when getting non-static field");
-                                    }
-
-                                    if (expr == "")
-                                        expr = V0;
-
-                                    nonStaticFields.Add((modifiers, type, name, expr));
-                                    j += 4;
-                                    continue;
+                                    expr += words[k] + " ";
+                                    k++;
                                 }
 
+                                if (expr == "")
+                                    expr = V0;
+                                var rawField = new CatField(name.Trim(), type.Trim(), expr.Trim()) {_modifiers = modifiers};
+                                classProperties.Add(rawField);
+                                j += 4;
+                                modifiers = 0;
+                                continue;
                             }
                         }
 
                         if (words[j] == "static")
                         {
-                            modifiers += 4;
+                            modifiers += (int)Modifier.Static;
                         }
 
                         if (words[j] == "constructor")
                         {
-                            modifiers += 6; //static method
+                            modifiers += (int)Modifier.Constructor;
                         }
 
                         if (words[j] == "field")
                         {
-                            modifiers += 1;
+                            modifiers += (int)Modifier.Field;
                         }
 
                         if (words[j] == "method")
                         {
-                            modifiers += 2;
+                            modifiers += (int)Modifier.Method;
                         }
 
                         if (words[j] == "{")
@@ -206,50 +187,26 @@ namespace Cat
 
                 after: //All fields and methods are read
 
-                var ret = Heap.Count;
-                var classHeap = new List<object>
-                {
-                    "|C|" + ClassName,
-                    /*"nfc:" + */ nonStaticFields.Count,
-                    /*"sfc:" + */ staticFields.Count,
-                    /*"nmc:" + */ nonStaticMethods.Count,
-                    /*"smc:" + */ staticMethods.Count
-                }; //x5
-                foreach (var f in nonStaticFields) //x3
-                {
-                    classHeap.Add(f.name);
-                    classHeap.Add(f.type);
-                    classHeap.Add(f.value);
-                }
-
-                foreach (var f in staticFields) //x3
-                {
-                    classHeap.Add(f.name);
-                    classHeap.Add(f.type);
-                    classHeap.Add(f.value);
-                }
-
-                foreach (var f in nonStaticMethods) //x2
-                {
-                    classHeap.Add(f.signature);
-                    classHeap.Add(f.link);
-                }
-
-                foreach (var f in staticMethods) //x2
-                {
-                    classHeap.Add(f.signature);
-                    classHeap.Add(f.link);
-                }
+                var clazz = new CatClass(ClassName, classProperties.ToArray());
 
                 //var size = 5 + nonStaticFields.Count * 2 + staticFields.Count * 3 + nonStaticMethods.Count + staticMethods.Count * 2;
 
-                HeapHandler.LoadListToHeap(classHeap);
+                var ret = HeapHandler.LoadListToHeap(clazz.ToMemoryBlock());
+
+                Types.Add(ClassName, ret);
+
+                foreach (var prop in clazz._properties)
+                {
+                    if (prop is CatConstructor constr)
+                    {
+                        constr._returnType = ret;
+                    }
+                }
                 
-                Types.Add(ClassName,ret);
-                return ret;
+                return (clazz,ret);
             }
 
-            return L0;
+            return (null,L0);
         }
 
         /// <summary>
@@ -260,21 +217,17 @@ namespace Cat
         {
             var k = 0;
             while (k < Heap.Count - 1 && (!(Heap[k] is string sk) || sk != "|C|" + className)) k++;
-            if (Heap[k] is string kcn && kcn == "|C|" + className)
-            {
-                var nfc = (int) Heap[k + 1];
-                var sfc = (int) Heap[k + 2];
-                var nmc = (int) Heap[k + 3];
-                var smc = (int) Heap[k + 4];
-                var size = 5 + nfc * 3 + sfc * 3 + 2 * nmc + smc * 2;
-                for (var i = k; i < k + size; i++)
-                    Heap[i] = H0;
-            }
+            var clazzIndex = CatClass.ReadFromHeapWithIndex(k);
+            var size = clazzIndex.nextIndex - k;
 
+            for (var i = 0; i < size; i++)
+            {
+                Heap[i + k] = H0;
+            }
+            
             DoesHeapContainSpaces = true;
             RemoveCount++;
             Types.Remove(className);
-//	        CatCore.Heap.RemoveRange(k,size);
         }
     }
 }
