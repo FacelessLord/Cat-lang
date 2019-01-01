@@ -49,7 +49,7 @@ namespace Cat
         
         private static void Main(string[] args)
         {
-            Console.WriteLine(V0 == "V\0");
+            var global = CatClassLoader.LoadClassFile("global.cls");
             var clazzIndex = CatClassLoader.LoadClassFile("tst.cls");
             var c1 = clazzIndex.clazz;
             //LoadListToHeap(c1.ToMemoryBlock());
@@ -57,6 +57,8 @@ namespace Cat
             LoadListToHeap(o1.ToMemoryBlock());
             Console.WriteLine(EMath.ArrayToString(Heap.ToArray()));
             o1.GetProperty("i").ToField()._value = 7;
+            
+            Console.WriteLine(global.clazz.GetProperty("Pi").ToField()._value);
             Console.WriteLine(o1.GetProperty("i").ToField()._value);
         }
 
@@ -64,15 +66,6 @@ namespace Cat
         //Fieldname = &2 :: field is equal to an object on index 2 :: 2 is a link
         //add an option to try to find exact copies
 
-        /// <summary>
-        /// List that contains primitive type codewords
-        /// </summary>
-        ///
-        /// <remarks>
-        /// Primitive types have code equal to (-1-IndexOf(primitive))
-        /// </remarks>
-        public static List<string> Primitives { get; } = new List<string>()
-            {"byte", "int", "long", "angle", "string", "bool", "float", "double", "precise"};
 
         /// <summary>
         /// Mapping from type name to index of type in heap
@@ -96,9 +89,9 @@ namespace Cat
         /// <returns> index of the type in heap</returns>
         public static int GetTypeIndex(string type)
         {
-            if (Primitives.Contains(type))
+            if (PrimitiveHandler.Primitives.Contains(type))
             {
-                return (-1-Primitives.IndexOf(type));
+                return (-1-PrimitiveHandler.Primitives.IndexOf(type));
             }
 
             if (Types.ContainsKey(type))

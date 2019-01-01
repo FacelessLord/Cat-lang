@@ -16,6 +16,9 @@
       <e p="CatCore.cs" t="Include" />
       <e p="CatObjectLoader.cs" t="Include" />
       <e p="ExceptionHandler.cs" t="Include" />
+      <e p="Exceptions" t="Include">
+        <e p="HeapOrderingException.cs" t="Include" />
+      </e>
       <e p="HeapHandler.cs" t="Include" />
       <e p="LICENSE.md" t="Include" />
       <e p="ObjectHandler.cs" t="Include" />
@@ -23,11 +26,17 @@
       <e p="Structure" t="Include">
         <e p="CatClass.cs" t="Include" />
         <e p="CatCompoundObject.cs" t="Include" />
+        <e p="CatConstructor.cs" t="Include" />
         <e p="CatField.cs" t="Include" />
         <e p="CatMethod.cs" t="Include" />
         <e p="CatPrimitiveObject.cs" t="Include" />
       </e>
       <e p="bin" t="ExcludeRecursive" />
+      <e p="classes" t="Include">
+        <e p="global.cls" t="Include" />
+        <e p="tst.cls" t="Include" />
+        <e p="tst2.cls" t="Include" />
+      </e>
       <e p="obj" t="ExcludeRecursive">
         <e p="Debug" t="Include">
           <e p="netcoreapp2.1" t="Include">
@@ -36,8 +45,6 @@
         </e>
       </e>
       <e p="packages" t="ExcludeRecursive" />
-      <e p="tst.cls" t="Include" />
-      <e p="tst2.cls" t="Include" />
     </e>
   </component>
 </project>

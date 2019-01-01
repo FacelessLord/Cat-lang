@@ -10,6 +10,8 @@ namespace Cat
 {
     public static class CatClassLoader
     {
+
+        public static string basePath = "classes/";
         /// <summary>
         /// Loads class internal fields to use them in program to create objects
         /// </summary>
@@ -17,7 +19,7 @@ namespace Cat
         /// <returns></returns>
         public static (CatClass clazz,int index) LoadClassFile(string className)
         {
-            var lines = File.ReadAllLines(className);
+            var lines = File.ReadAllLines(basePath+className);
 
             var search = false;
             var ClassName = "";

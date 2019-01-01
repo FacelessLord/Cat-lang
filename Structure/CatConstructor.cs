@@ -20,7 +20,7 @@ namespace Cat.Structure
 		/// <summary>
 		/// Array of indexes of arguments in Heap
 		/// </summary>
-		public int[] _signature;
+		public int[] _signature = new int[0];
 
 		/// <summary>
 		/// Index of the return type in Heap

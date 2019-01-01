@@ -134,7 +134,7 @@ namespace Cat.Structure
 			{
 				types[i] = GetTypeIndex(singleArguments[i].Trim().Split()[0].Trim());
 			}
-			var name = rawSign.Trim().Substring(0, openParenthese).Trim();
+			var name = rawSign.Substring(0, openParenthese).Trim();
 
 			return (name, types);
 		}
