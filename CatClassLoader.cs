@@ -17,12 +17,12 @@ namespace Cat
         /// </summary>
         /// <param name="className"> Name of class to load</param>
         /// <returns></returns>
-        public static (CatClass clazz,int index) LoadClassFile(string className)
+        public static (CatClass clazz,int index) LoadClassFile(string fileName)
         {
-            var lines = File.ReadAllLines(basePath+className);
+            var lines = File.ReadAllLines(basePath+fileName);
 
             var search = false;
-            var ClassName = "";
+            var className = "";
             (int i, int j) index = (0, 0);
             for (var i = 0; i < lines.Length; i++)
             {
@@ -47,7 +47,7 @@ namespace Cat
                     }
                     else
                     {
-                        ClassName = words[j];
+                        className = words[j];
                         index = (i, j);
                         goto search;
                     }
@@ -56,7 +56,7 @@ namespace Cat
 
             search:
             
-            if (ClassName != "")
+            if (className != "")
             {
                 var bracesNesting = 0;
 
@@ -91,8 +91,8 @@ namespace Cat
                                 }
 
                                 signature = signature.Trim();
-                                string link = className + ":" + i; //i-th line of file:className.cls
-                                string[] sign = signature.Split("~");
+                                string link = fileName + ":" + i; //i-th line of file:className.cls
+                                string[] sign = signature.Split('~');
                                 var rawMethod = new CatMethod(sign[0].Trim(), sign[1].Trim(), className.Trim(), i) {_modifiers = modifiers};
                                 classProperties.Add(rawMethod);
                                 
@@ -112,7 +112,7 @@ namespace Cat
                                 }
 
                                 signature = signature.Trim();
-                                string link = className + ":" + i; //i-th line of file:className.cls
+                                string link = fileName + ":" + i; //i-th line of file:className.cls
                                 var rawMethod = new CatConstructor(signature,"", className.Trim(), i) {_modifiers = modifiers};
                                 classProperties.Add(rawMethod);
                                 
@@ -189,13 +189,13 @@ namespace Cat
 
                 after: //All fields and methods are read
 
-                var clazz = new CatClass(ClassName, classProperties.ToArray());
+                var clazz = new CatClass(className, classProperties.ToArray());
 
                 //var size = 5 + nonStaticFields.Count * 2 + staticFields.Count * 3 + nonStaticMethods.Count + staticMethods.Count * 2;
 
                 var ret = HeapHandler.LoadListToHeap(clazz.ToMemoryBlock());
 
-                Types.Add(ClassName, ret);
+                Types.Add(className, ret);
 
                 foreach (var prop in clazz._properties)
                 {
@@ -219,7 +219,7 @@ namespace Cat
         {
             var k = 0;
             while (k < Heap.Count - 1 && (!(Heap[k] is string sk) || sk != "|C|" + className)) k++;
-            var clazzIndex = CatClass.ReadFromHeapWithIndex(k);
+            var clazzIndex = CatClass.NewInstance().ReadFromHeapWithIndex(k);
             var size = clazzIndex.nextIndex - k;
 
             for (var i = 0; i < size; i++)

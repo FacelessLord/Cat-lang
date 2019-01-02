@@ -89,7 +89,7 @@ namespace Cat.Structure
 			return new CatMethod(_name,newSignature,_returnType,_class,_line){_modifiers = _modifiers};
 		}
 
-		public new static (CatMethod obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
+		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
 		{
 			try
 			{
@@ -114,6 +114,10 @@ namespace Cat.Structure
 			{
 				throw new HeapOrderingException();
 			}
+		}
+		public static CatMethod NewInstance()
+		{
+			return new CatMethod("","","",-1);
 		}
 
 		/// <summary>

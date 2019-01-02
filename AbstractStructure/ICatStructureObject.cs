@@ -26,6 +26,7 @@ namespace Cat.AbstractStructure
 		{
 			return ModifierHandler.IsMethod(_modifiers);
 		}
+		
 		public bool IsStatic()
 		{
 			return ModifierHandler.IsStatic(_modifiers);
@@ -39,12 +40,12 @@ namespace Cat.AbstractStructure
 			return ModifierHandler.IsConstructor(_modifiers);
 		}
 
-		public static CatStructureObject ReadFromHeap(int startIndex)
+		public virtual CatStructureObject ReadFromHeap(int startIndex)
 		{
 			return ReadFromHeapWithIndex(startIndex).obj;
 		}
 
-		public static (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
+		public virtual (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
 		{
 			throw new System.NotImplementedException();
 		}

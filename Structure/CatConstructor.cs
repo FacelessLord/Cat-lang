@@ -37,11 +37,13 @@ namespace Cat.Structure
 		/// </summary>
 		public int _line;
 
-		public CatConstructor(string name, int[] signature, int returnType, string linkClass, int line, params Modifier[] modifiers) : base(name, signature, returnType, linkClass, line, modifiers)
+		public CatConstructor(string name, int[] signature, int returnType, string linkClass, int line, params Modifier[] modifiers) :
+			base(name, signature, returnType, linkClass, line, modifiers)
 		{
 		}
 
-		public CatConstructor(string rawSignature, string returnType, string linkClass, int line, params Modifier[] modifiers) : base(rawSignature, returnType, linkClass, line, modifiers)
+		public CatConstructor(string rawSignature, string returnType, string linkClass, int line, params Modifier[] modifiers) :
+			base(rawSignature, returnType, linkClass, line, modifiers)
 		{
 		}
 		

@@ -22,7 +22,7 @@ namespace Cat.Structure
 		/// <summary>
 		/// Parent class name for inheritance
 		/// </summary>
-		public string _parent;
+		public CatClass _parent;
 
 		public CatClass(string name, params CatProperty[] properties)
 		{
@@ -30,10 +30,17 @@ namespace Cat.Structure
 			_properties = properties;
 		}
 
-		public CatClass SetParent(string parent)
+		public CatClass SetParentClass(CatClass parent)
 		{
 			_parent = parent;
 			return this;
+		}
+
+		private static readonly CatClass NullClass = new CatClass("");
+
+		public static CatClass NewInstance()
+		{
+			return NullClass;
 		}
 
 		public override LinkedList<object> ToMemoryBlock()
@@ -85,8 +92,8 @@ namespace Cat.Structure
 			{
 				newProperties[i] =(CatProperty) _properties[i].Clone();
 			}
-			var cco = new CatCompoundObject(_name,newProperties);
-			cco.SetParent(_parent);
+			var cco = new CatCompoundObject(this,newProperties);
+			cco.SetParentClass(_parent);
 			return cco;                                    
 		}
 
@@ -100,7 +107,7 @@ namespace Cat.Structure
 			return _properties.FirstOrDefault(property => property._name == name);
 		}
 		
-		public new static (CatClass obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
+		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
 		{
 			try
 			{
@@ -113,15 +120,15 @@ namespace Cat.Structure
 					var propertyInitializer = (string)Heap[startIndex + 2 + j];
 					if (propertyInitializer.StartsWith("|f"))
 					{
-						var propIndex = CatField.ReadFromHeapWithIndex(startIndex + 2 + j);
+						var propIndex = CatField.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
 						j += propIndex.nextIndex;
-						properties.Add(propIndex.obj);
+						properties.Add((CatField)propIndex.obj);
 					}
 					else
 					{
-						var propIndex = CatMethod.ReadFromHeapWithIndex(startIndex + 2 + j);
+						var propIndex = CatMethod.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
 						j += propIndex.nextIndex;
-						properties.Add(propIndex.obj);
+						properties.Add((CatMethod)propIndex.obj);
 					}
 				}
 
@@ -132,7 +139,7 @@ namespace Cat.Structure
 				{
 					parent = parentName;
 				}
-				var obj = new CatClass(name, properties.ToArray()){_parent = parent};
+				var obj = new CatClass(name, properties.ToArray()){_parent = CatCore.GetClassForName(parent)};
 			
 				return (obj,startIndex+3+j);
 			}

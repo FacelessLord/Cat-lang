@@ -13,10 +13,6 @@ namespace Cat.Structure
 	public class CatCompoundObject : CatObject
 	{
 		/// <summary>
-		/// Index of the type in heap
-		/// </summary>
-		public int _type;
-		/// <summary>
 		/// An Array of properties of this object
 		/// </summary>
 		public CatProperty[] _properties;
@@ -24,15 +20,18 @@ namespace Cat.Structure
 		/// <summary>
 		/// Parent class for inheritance
 		/// </summary>
-		public string _parent;
-		
-		public CatCompoundObject(string type,params CatProperty[] properties) : base(type)
+		public CatClass _parent;
+
+		public CatClass _typeObject;
+
+		public CatCompoundObject(CatClass typeClass,params CatProperty[] properties) : base(typeClass._name)
 		{
-			_type = GetTypeIndex(type);
+			_type = GetTypeIndex(typeClass._name);
+			_typeObject = typeClass;
 			_properties = properties;
 		}
 
-		public void SetParent(string parent)
+		public void SetParentClass(CatClass parent)
 		{
 			_parent = parent;
 		}
@@ -73,8 +72,15 @@ namespace Cat.Structure
 		{
 			return _properties.FirstOrDefault(property => property._name == name);
 		}
+
+		private static readonly CatCompoundObject NullObject = new CatCompoundObject(null);
+
+		public static CatCompoundObject NewInstance()
+		{
+			return NullObject;
+		}
 		
-		public new static (CatCompoundObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
+		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
 		{
 			try
 			{
@@ -87,15 +93,15 @@ namespace Cat.Structure
 					var propertyInitializer = (string)Heap[startIndex + 2 + j];
 					if (propertyInitializer.StartsWith("|f"))
 					{
-						var propIndex = CatField.ReadFromHeapWithIndex(startIndex + 2 + j);
+						var propIndex = CatField.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
 						j += propIndex.nextIndex;
-						properties.Add(propIndex.obj);
+						properties.Add((CatField)propIndex.obj);
 					}
 					else
 					{
-						var propIndex = CatMethod.ReadFromHeapWithIndex(startIndex + 2 + j);
+						var propIndex =  CatMethod.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
 						j += propIndex.nextIndex;
-						properties.Add(propIndex.obj);
+						properties.Add((CatMethod)propIndex.obj);
 					}
 				}
 
@@ -106,7 +112,8 @@ namespace Cat.Structure
 				{
 					parent = parentName;
 				}
-				var obj = new CatCompoundObject(type, properties.ToArray()){_parent = parent};
+				
+				var obj = new CatCompoundObject(CatCore.GetClassForName(type), properties.ToArray()){_parent = CatCore.GetClassForName(parent)};
 			
 				return (obj,startIndex+3+j);
 			}

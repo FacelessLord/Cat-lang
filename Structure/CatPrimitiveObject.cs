@@ -16,35 +16,36 @@ namespace Cat.Structure
 		/// Index of the type in heap
 		/// </summary>
 		public int _type;
-		/// <summary>
-		/// Either value of primitive type or link to the object
-		/// </summary>
-		public object _value;
 		
-		public CatPrimitiveObject(string type,object value) : base(type)
+		public CatPrimitiveObject(string type) : base(type)
 		{
 			_type = GetTypeIndex(type);
-			_value = value;
 		}
 		
 		public override LinkedList<object> ToMemoryBlock()
 		{
 			var block = new LinkedList<object>();
 			block.AddLast("|p" + _type);
-			block.AddLast(_value);
 			block.AddLast("o|");// end of the object
 
 			return block;
 		}
+
+		private static readonly CatPrimitiveObject NullObject = new CatPrimitiveObject("");
+
+		public static CatPrimitiveObject NewInstance()
+		{
+			return NullObject;
+		}
 		
-		public new static (CatPrimitiveObject obj, int nexIndex) ReadFromHeapWithIndex(int startIndex)
+		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
 		{
 			try
 			{
 				var ptype = Heap[startIndex];
 				var value = Heap[startIndex + 1];
 				var type = ((string) ptype).Substring(2);
-				var obj = new CatPrimitiveObject(type,value);
+				var obj = new CatPrimitiveObject(type);
 				return (obj, startIndex + 2);
 			}
 			catch (Exception e)

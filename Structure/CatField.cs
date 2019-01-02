@@ -40,6 +40,13 @@ namespace Cat.Structure
 			}
 		}
 
+		private static readonly CatField NullField = new CatField("", L0, V0);
+		
+		public static CatField NewInstance()
+		{
+			return NullField;
+		}
+
 		public override LinkedList<object> ToMemoryBlock()
 		{
 			var block = new LinkedList<object>();
@@ -55,7 +62,7 @@ namespace Cat.Structure
 			return new CatField(_name,_type, _value){_modifiers = _modifiers};
 		}
 
-		public new static (CatField obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
+		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
 		{
 			try
 			{

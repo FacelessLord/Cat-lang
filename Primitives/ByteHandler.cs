@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
+using Cat.Calculators;
 
 namespace Cat.Primitives
 {
     public class ByteHandler
     {
-        public static byte Cast(object value)
+        public static byte Cast(object value, Dictionary<string,byte> variables)
         {
             try
             {
@@ -12,7 +14,8 @@ namespace Cat.Primitives
             }
             catch (Exception e)
             {
-                return ByteCalculator.TryCount(value);
+                var math = new ByteMath();
+                return math.TryCount(value,variables);
             }
         }
     }

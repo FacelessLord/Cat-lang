@@ -2,10 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using static Cat.HeapHandler;
 using static Cat.Structure.Modifier;
 using CalculatorConsole;
 using Cat.AbstractStructure;
+using Cat.Primitives;
+using Cat.Primitives.Precise;
 using Cat.Structure;
 
 namespace Cat
@@ -49,17 +52,23 @@ namespace Cat
         
         private static void Main(string[] args)
         {
-            var global = CatClassLoader.LoadClassFile("global.cls");
-            var clazzIndex = CatClassLoader.LoadClassFile("tst.cls");
-            var c1 = clazzIndex.clazz;
-            //LoadListToHeap(c1.ToMemoryBlock());
-            var o1 = c1.CreateObjectFromClass();
-            LoadListToHeap(o1.ToMemoryBlock());
-            Console.WriteLine(EMath.ArrayToString(Heap.ToArray()));
-            o1.GetProperty("i").ToField()._value = 7;
-            
-            Console.WriteLine(global.clazz.GetProperty("Pi").ToField()._value);
-            Console.WriteLine(o1.GetProperty("i").ToField()._value);
+//            var global = CatClassLoader.LoadClassFile("global.cls");
+//            var clazzIndex = CatClassLoader.LoadClassFile("tst.cls");
+//            var c1 = clazzIndex.clazz;
+//            //LoadListToHeap(c1.ToMemoryBlock());
+//            var o1 = c1.CreateObjectFromClass();
+//            LoadListToHeap(o1.ToMemoryBlock());
+//            Console.WriteLine(EMath<int>.ArrayToString(Heap.ToArray()));
+//            o1.GetProperty("i").ToField()._value = 7;
+//            
+//            Console.WriteLine(global.clazz.GetProperty("Pi").ToField()._value);
+//            Console.WriteLine(o1.GetProperty("i").ToField()._value);
+            var a = new CatPrecise("0.0");
+            a.Period = new List<char>(){'9','8'};
+            var b = new CatPrecise("0.0");
+            b.Period = new List<char>() {'1', '2', '3'};
+            var sum = b+a;
+            Console.WriteLine(CatPrecise.Tau.WithDigits(100));
         }
 
         //Fieldname = 2 :: field is equal to 2
@@ -89,9 +98,9 @@ namespace Cat
         /// <returns> index of the type in heap</returns>
         public static int GetTypeIndex(string type)
         {
-            if (PrimitiveHandler.Primitives.Contains(type))
+            if (TypeHandler.Primitives.Contains(type))
             {
-                return (-1-PrimitiveHandler.Primitives.IndexOf(type));
+                return (-1-TypeHandler.Primitives.IndexOf(type));
             }
 
             if (Types.ContainsKey(type))
@@ -101,6 +110,12 @@ namespace Cat
             
             ExceptionHandler.ThrowException("NullPointerException","type \""+ type+"\" is not loaded.");
             return -10;
+        }
+
+        public static CatClass GetClassForName(string name)
+        {
+            var classIndex = Types[name];
+            return (CatClass) CatClass.NewInstance().ReadFromHeap(classIndex);
         }
     }
 }
