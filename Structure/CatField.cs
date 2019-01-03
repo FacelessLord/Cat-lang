@@ -32,7 +32,7 @@ namespace Cat.Structure
 		
 		public CatField(string name, string type, object value, params Modifier[] modifiers) : base(name,modifiers)
 		{
-			_type = GetTypeIndex(type);
+			_type = TypeHandler.GetTypeIndex(type);
 			_value = value;
 			if (!ModifierHandler.IsField(_modifiers))
 			{
@@ -46,38 +46,10 @@ namespace Cat.Structure
 		{
 			return NullField;
 		}
-
-		public override LinkedList<object> ToMemoryBlock()
-		{
-			var block = new LinkedList<object>();
-			block.AddLast("|f" + _name);
-			block.AddLast(_modifiers);
-			block.AddLast(_type);
-			block.AddLast(_value);
-			return block;
-		}
 		
 		public override object Clone()
 		{
 			return new CatField(_name,_type, _value){_modifiers = _modifiers};
-		}
-
-		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
-		{
-			try
-			{
-				var fname = Heap[startIndex];
-				var modifiers = Heap[startIndex + 1];
-				var type = Heap[startIndex + 2];
-				var value = Heap[startIndex + 3];
-				var name = ((string) fname).Substring(2);
-				var obj = new CatField(name, (string) type, (int) value) {_modifiers = (int) modifiers};
-				return (obj, startIndex + 4);
-			}
-			catch (Exception e)
-			{
-				throw new HeapOrderingException();
-			}
 		}
 	}
 }

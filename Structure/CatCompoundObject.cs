@@ -20,47 +20,19 @@ namespace Cat.Structure
 		/// <summary>
 		/// Parent class for inheritance
 		/// </summary>
-		public CatClass _parent;
+		public CatClass _parentClass;
 
-		public CatClass _typeObject;
+		public CatClass _typeClass;
 
 		public CatCompoundObject(CatClass typeClass,params CatProperty[] properties) : base(typeClass._name)
 		{
-			_type = GetTypeIndex(typeClass._name);
-			_typeObject = typeClass;
+			_typeClass = typeClass;
 			_properties = properties;
 		}
 
 		public void SetParentClass(CatClass parent)
 		{
-			_parent = parent;
-		}
-		
-		public override LinkedList<object> ToMemoryBlock()
-		{
-			var block = new LinkedList<object>();
-			block.AddLast("|c" + _type);
-			if (_parent != null)
-			{
-				block.AddLast("|P" + _parent);
-			}
-			else
-			{
-				block.AddLast("|P|");
-			}
-			
-			foreach (var p in _properties)
-			{
-				var pBlock = p.ToMemoryBlock();
-				foreach (var val in pBlock)//saving all properties of an object
-				{
-					block.AddLast(val);
-				}
-			}
-
-			block.AddLast("o|");// end of the object
-
-			return block;
+			_parentClass = parent;
 		}
 
 		public void InjectProperty(CatProperty property)
@@ -78,49 +50,6 @@ namespace Cat.Structure
 		public static CatCompoundObject NewInstance()
 		{
 			return NullObject;
-		}
-		
-		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
-		{
-			try
-			{
-				var ctype =(string) Heap[startIndex];
-				var pparent = (string) Heap[startIndex + 1];
-				var properties = new List<CatProperty>();
-				int j = 0;
-				while (!(Heap[startIndex + 2 + j] is string entry) || entry.StartsWith("|f")|| entry.StartsWith("|m"))
-				{
-					var propertyInitializer = (string)Heap[startIndex + 2 + j];
-					if (propertyInitializer.StartsWith("|f"))
-					{
-						var propIndex = CatField.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
-						j += propIndex.nextIndex;
-						properties.Add((CatField)propIndex.obj);
-					}
-					else
-					{
-						var propIndex =  CatMethod.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
-						j += propIndex.nextIndex;
-						properties.Add((CatMethod)propIndex.obj);
-					}
-				}
-
-				var type = ctype.Substring(2);
-				var parentName = pparent.Substring(2);
-				var parent = "void";
-				if (parentName != "|")
-				{
-					parent = parentName;
-				}
-				
-				var obj = new CatCompoundObject(CatCore.GetClassForName(type), properties.ToArray()){_parent = CatCore.GetClassForName(parent)};
-			
-				return (obj,startIndex+3+j);
-			}
-			catch (Exception e)
-			{
-				throw new HeapOrderingException();
-			}
 		}
 	}
 }

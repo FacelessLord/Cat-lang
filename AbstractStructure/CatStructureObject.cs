@@ -5,11 +5,6 @@ namespace Cat.AbstractStructure
 {
 	public abstract class CatStructureObject
 	{
-		/// <summary>
-		/// Method that will aggregate values of the Structure object
-		/// </summary>
-		/// <returns> LinkedList that contains all values of Structure object</returns>
-		public abstract LinkedList<object> ToMemoryBlock();
 		public int _modifiers;
 
 		public CatStructureObject(params Modifier[] modifiers)
@@ -38,16 +33,6 @@ namespace Cat.AbstractStructure
 		public bool IsConstructor()
 		{
 			return ModifierHandler.IsConstructor(_modifiers);
-		}
-
-		public virtual CatStructureObject ReadFromHeap(int startIndex)
-		{
-			return ReadFromHeapWithIndex(startIndex).obj;
-		}
-
-		public virtual (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
-		{
-			throw new System.NotImplementedException();
 		}
 	}
 }

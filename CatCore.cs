@@ -6,6 +6,7 @@ using System.Numerics;
 using static Cat.HeapHandler;
 using static Cat.Structure.Modifier;
 using Cat.AbstractStructure;
+using Cat.Handlers.Parsers;
 using Cat.Primitives;
 using Cat.Primitives.Precise;
 using Cat.Structure;
@@ -22,7 +23,7 @@ namespace Cat
         /// <summary>
         /// An ArrayList that contain all program data, such as links, values, arrays, etc...
         /// </summary>
-        public static readonly ArrayList Heap = new ArrayList();
+        public static readonly List<CatStructureObject> Heap = new List<CatStructureObject>();
 
         /// <summary>
         /// Whether there was removing in Heap
@@ -35,11 +36,6 @@ namespace Cat
         public static int RemoveCount = 0;
 
         /// <summary>
-        /// Null-character used to occupy empty space in Heap (Heap-Zero)
-        /// </summary>
-        public const string H0 = "\0";
-
-        /// <summary>
         /// Link-Zero
         /// </summary>
         public const int L0 = -1000;
@@ -48,26 +44,23 @@ namespace Cat
         /// Value-Zero
         /// </summary>
         public const string V0 = "V\0";
+
+        public static Dictionary<string, CatStructureObject> Variables = new Dictionary<string, CatStructureObject>();
         
         private static void Main(string[] args)
         {
-//            var global = CatClassLoader.LoadClassFile("global.cls");
-//            var clazzIndex = CatClassLoader.LoadClassFile("tst.cls");
-//            var c1 = clazzIndex.clazz;
-//            //LoadListToHeap(c1.ToMemoryBlock());
-//            var o1 = c1.CreateObjectFromClass();
-//            LoadListToHeap(o1.ToMemoryBlock());
-//            Console.WriteLine(EMath<int>.ArrayToString(Heap.ToArray()));
-//            o1.GetProperty("i").ToField()._value = 7;
-//            
-//            Console.WriteLine(global.clazz.GetProperty("Pi").ToField()._value);
-//            Console.WriteLine(o1.GetProperty("i").ToField()._value);
-            var a = new CatPrecise("0.0");
-            a.Period = new List<char>(){'9','8'};
-            var b = new CatPrecise("0.0");
-            b.Period = new List<char>() {'1', '2', '3'};
-            var sum = b+a;
-            Console.WriteLine(CatPrecise.Tau.WithDigits(100));
+            Variables.Add("_Pi_",CatPrecise.Pi);
+            Variables.Add("_Tau_",CatPrecise.Tau);
+            Variables.Add("_E_",CatPrecise.E);
+            Variables.Add("Pi",CatPrecise.Pi.WithDigits(10));
+            Variables.Add("Tau",CatPrecise.Tau.WithDigits(10));
+            Variables.Add("E",CatPrecise.E.WithDigits(10));
+            
+            ObjectExpressionParser.ParseAndExecute("{a,b,c}={Pi,20r,\"asf\"}",Variables);
+            ObjectExpressionParser.ParseAndExecute("d={a,b,c}",Variables);
+            ObjectExpressionParser.ParseAndExecute("{_,_,_,_}={a,b,c,d}",Variables);
+            
+            ObjectExpressionParser.ParseAndExecute("{a,b,c,d}|,\\s >> out",Variables);
         }
 
         //Fieldname = 2 :: field is equal to 2
@@ -79,6 +72,10 @@ namespace Cat
         /// Mapping from type name to index of type in heap
         /// </summary>
         public static readonly Dictionary<string,int> Types = new Dictionary<string, int>();
+        /// <summary>
+        /// Mapping from type name to index of type in heap
+        /// </summary>
+        public static readonly Dictionary<string,CatClass> Classes = new Dictionary<string, CatClass>();
         
         /// <summary>
         /// Fully loaded class files
@@ -90,31 +87,9 @@ namespace Cat
 //        /// </summary>
 //        public static readonly Dictionary<string,CatClass> Classes = new Dictionary<string,CatClass>();
         
-        /// <summary>
-        /// Method that finds index of given type in heap
-        /// </summary>
-        /// <param name="type"> name of the type</param>
-        /// <returns> index of the type in heap</returns>
-        public static int GetTypeIndex(string type)
-        {
-            if (TypeHandler.Primitives.Contains(type))
-            {
-                return (-1-TypeHandler.Primitives.IndexOf(type));
-            }
-
-            if (Types.ContainsKey(type))
-            {
-                return Types[type];
-            }
-            
-            ExceptionHandler.ThrowException("NullPointerException","type \""+ type+"\" is not loaded.");
-            return -10;
-        }
-
         public static CatClass GetClassForName(string name)
         {
-            var classIndex = Types[name];
-            return (CatClass) CatClass.NewInstance().ReadFromHeap(classIndex);
+            return Classes[name];
         }
     }
 }

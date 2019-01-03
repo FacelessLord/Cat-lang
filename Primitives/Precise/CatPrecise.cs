@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Cat.Structure;
 using Cat.Utilities;
@@ -361,23 +360,12 @@ namespace Cat.Primitives.Precise
             return sgn + intPt.Append((decPt.Length > 0 || periodStr.Length > 0 ? (".") : "") + decPt + periodStr);
         }
         
-        public string WithDigits(int num)
+        public CatPrecise WithDigits(int num)
         {
-            var sgn = (_lessThanZero ? "-" : "");
-            var intPt = new StringBuilder();
-            var decPt = new StringBuilder();
-            for (var i = 0; i < _order; i++)
-            {
-                intPt.Append(this[i]);
-            }
-
-            for (var i = _order; i < _order+num; i++)
-            {
-                decPt.Append(this[i]);
-            }
-            var periodStr = new StringBuilder();
-
-            return sgn + intPt.Append(decPt.Length > 0 ? ("." + decPt) : "")+periodStr;
+            var newDigits = new List<char>();
+            for(var i=0;i<num;i++)
+                newDigits.Add(this[i]);
+            return new CatPrecise(0){_digits = newDigits, _order = _order};
         }
 
         public string ToExponentialForm(int precision = 8)

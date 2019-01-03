@@ -28,7 +28,7 @@ namespace Cat
 
             if (value is CatCompoundObject cco)
             {
-                var obj = cco._typeObject;
+                var obj = cco._typeClass;
                 while (obj._parent != null && obj._name != type)
                 {
                     obj = obj._parent;
@@ -45,34 +45,6 @@ namespace Cat
         
         public static CatAngle CastToAngle(object o)
         {
-            if (o is string s)
-            {
-                if (s.EndsWith("g"))
-                {
-                    return new CatAngle((Math.PI/200)*double.Parse(s.Substring(0, s.Length - 1)));
-                }
-                if (s.EndsWith("grad"))
-                {
-                    return new CatAngle((Math.PI/200)*double.Parse(s.Substring(0, s.Length - 4)));
-                }
-                if (s.EndsWith("r"))
-                {
-                    return new CatAngle(double.Parse(s.Substring(0, s.Length - 1)));
-                }
-                if (s.EndsWith("rad"))
-                {
-                    return new CatAngle(double.Parse(s.Substring(0, s.Length - 3)));
-                }
-                if (s.EndsWith("d"))
-                {
-                    return new CatAngle((Math.PI/180)*double.Parse(s.Substring(0, s.Length - 1)));
-                }
-                if (s.EndsWith("deg"))
-                {
-                    return new CatAngle((Math.PI/180)*double.Parse(s.Substring(0, s.Length - 3)));
-                }
-            }
-
             return new CatAngle(o);
         }
         
@@ -89,11 +61,33 @@ namespace Cat
         /// Primitive types have code equal to (-1-IndexOf(primitive))
         /// </remarks>
         public static List<string> Primitives { get; } = new List<string>()
-            {"byte", "int", "long", "angle", "string", "bool", "float", "double", "precise"};
+            {"byte", "int", "long", "angle", "string", "bool", "float", "double", "precise", "object"};
         
         public static bool IsPrimitive(string type)
         {
             return Primitives.Contains(type);
+        }
+        
+        
+        /// <summary>
+        /// Method that finds index of given type in heap
+        /// </summary>
+        /// <param name="type"> name of the type</param>
+        /// <returns> index of the type in heap</returns>
+        public static int GetTypeIndex(string type)
+        {
+            if (IsPrimitive(type))
+            {
+                return (-1-Primitives.IndexOf(type));
+            }
+
+            if (CatCore.Types.ContainsKey(type))
+            {
+                return CatCore.Types[type];
+            }
+            
+            ExceptionHandler.ThrowException("NullPointerException","type \""+ type+"\" is not loaded.");
+            return -10;
         }
     }
 }

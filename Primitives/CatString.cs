@@ -2,28 +2,28 @@ using Cat.Structure;
 
 namespace Cat.Primitives
 {
-    public class CatByte : CatPrimitiveObject
+    public class CatString : CatPrimitiveObject
     {
-        public byte _value;
-        public CatByte(object value) : base("byte")
+        public string _value;
+        public CatString(object value) : base("string")
         {
             switch (value)
             {
                 case string s:
-                    _value = byte.Parse(s);
+                    _value = s;
                     break;
-                case CatByte b:
+                case CatString b:
                     _value = b._value;
                     break;
                 default:
-                    _value = (byte) value;
+                    _value = "" + value;
                     break;
             }
         }
 
         public override string ToString()
         {
-            return _value+"";
+            return "\""+_value + "\"";
         }
     }
 }

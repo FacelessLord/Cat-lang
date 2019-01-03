@@ -43,44 +43,6 @@ namespace Cat.Structure
 			return NullClass;
 		}
 
-		public override LinkedList<object> ToMemoryBlock()
-		{
-			var block = new LinkedList<object>();
-			block.AddLast("|C" + _name);
-			if(_parent != null)
-			{
-				block.AddLast("|P" + _parent);
-			}
-			else
-			{
-				block.AddLast("|P|");
-			}
-			var fieldCount = 0;
-			var methodCount = 0;
-			foreach (var t in _properties)
-			{
-				if (t.IsField())
-					fieldCount++;
-				if (t.IsMethod())
-					methodCount++;
-			}
-
-			block.AddLast(fieldCount);
-			block.AddLast(methodCount);
-
-			foreach (var p in _properties)
-			{
-				var pBlock = p.ToMemoryBlock();
-				foreach (var v in pBlock)
-				{
-					block.AddLast(v);
-				}
-			}
-			block.AddLast("C|");
-
-			return block;
-		}
-
 		/// <summary>
 		/// Method
 		/// </summary>
@@ -106,47 +68,11 @@ namespace Cat.Structure
 		{
 			return _properties.FirstOrDefault(property => property._name == name);
 		}
-		
-		public override (CatStructureObject obj, int nextIndex) ReadFromHeapWithIndex(int startIndex)
-		{
-			try
-			{
-				var cname =(string) Heap[startIndex];
-				var pparent = (string) Heap[startIndex + 1];
-				var properties = new List<CatProperty>();
-				int j = 0;
-				while (!(Heap[startIndex + 2 + j] is string entry) || entry.StartsWith("|f")|| entry.StartsWith("|m"))
-				{
-					var propertyInitializer = (string)Heap[startIndex + 2 + j];
-					if (propertyInitializer.StartsWith("|f"))
-					{
-						var propIndex = CatField.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
-						j += propIndex.nextIndex;
-						properties.Add((CatField)propIndex.obj);
-					}
-					else
-					{
-						var propIndex = CatMethod.NewInstance().ReadFromHeapWithIndex(startIndex + 2 + j);
-						j += propIndex.nextIndex;
-						properties.Add((CatMethod)propIndex.obj);
-					}
-				}
 
-				var name = cname.Substring(2);
-				var parentName = pparent.Substring(2);
-				var parent = "void";
-				if (parentName != "|")
-				{
-					parent = parentName;
-				}
-				var obj = new CatClass(name, properties.ToArray()){_parent = CatCore.GetClassForName(parent)};
-			
-				return (obj,startIndex+3+j);
-			}
-			catch (Exception e)
-			{
-				throw new HeapOrderingException();
-			}
+		~CatClass()
+		{
+			_parent = null;
+			_properties = null;
 		}
 	}
 }

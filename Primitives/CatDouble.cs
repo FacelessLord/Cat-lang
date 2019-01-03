@@ -2,21 +2,21 @@ using Cat.Structure;
 
 namespace Cat.Primitives
 {
-    public class CatByte : CatPrimitiveObject
+    public class CatDouble : CatPrimitiveObject
     {
-        public byte _value;
-        public CatByte(object value) : base("byte")
+        public double _value;
+        public CatDouble(object value) : base("double")
         {
             switch (value)
             {
                 case string s:
-                    _value = byte.Parse(s);
+                    _value = double.Parse(s);
                     break;
-                case CatByte b:
+                case CatDouble b:
                     _value = b._value;
                     break;
                 default:
-                    _value = (byte) value;
+                    _value = (double) value;
                     break;
             }
         }

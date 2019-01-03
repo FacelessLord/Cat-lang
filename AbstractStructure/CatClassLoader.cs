@@ -193,7 +193,7 @@ namespace Cat
 
                 //var size = 5 + nonStaticFields.Count * 2 + staticFields.Count * 3 + nonStaticMethods.Count + staticMethods.Count * 2;
 
-                var ret = HeapHandler.LoadListToHeap(clazz.ToMemoryBlock());
+                var ret = HeapHandler.LoadObjectToHeap(clazz);
 
                 Types.Add(className, ret);
 
@@ -217,19 +217,8 @@ namespace Cat
         /// <param name="className"> Class to unload</param>
         public static void UnloadClass(string className)
         {
-            var k = 0;
-            while (k < Heap.Count - 1 && (!(Heap[k] is string sk) || sk != "|C|" + className)) k++;
-            var clazzIndex = CatClass.NewInstance().ReadFromHeapWithIndex(k);
-            var size = clazzIndex.nextIndex - k;
-
-            for (var i = 0; i < size; i++)
-            {
-                Heap[i + k] = H0;
-            }
-            
-            DoesHeapContainSpaces = true;
-            RemoveCount++;
             Types.Remove(className);
+            Classes.Remove(className);
         }
     }
 }

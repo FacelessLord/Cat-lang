@@ -1,6 +1,8 @@
 using System;
 using static Cat.CatCore;
 using System.Collections.Generic;
+using Cat.AbstractStructure;
+
 namespace Cat
 {
 	public static class HeapHandler
@@ -14,7 +16,7 @@ namespace Cat
 
 			for (var i = 0; i < Heap.Count; i++)
 			{
-				if (Heap[i] is string sh && sh == H0)
+				if (Heap[i] is null)
 				{
 					if (zeroStart == -1)
 						zeroStart = i;
@@ -36,7 +38,7 @@ namespace Cat
 			}
 		}
 
-		public static int LoadListToHeap(List<object> list)
+		public static int LoadObjectToHeap(CatStructureObject obj)
 		{
 			if (DoesHeapContainSpaces)
 			{
@@ -46,7 +48,7 @@ namespace Cat
 				var zeroIndex = 0;
 				for (var i = 0; i < Heap.Count; i++)
 				{
-					if (Heap[i] is string k && k == H0)
+					if (Heap[i] is null)
 					{
 						if (zeroInARow == 0)
 							zeroIndex = i;
@@ -64,62 +66,14 @@ namespace Cat
 					}
 				}
 
-				if (bestZeroInARow >= list.Count)
+				if (bestZeroInARow >= 1)
 				{
-					for (var i = 0; i < list.Count; i++)
-						Heap[bestZeroIndex + i] = list[i];
+					Heap[bestZeroIndex] = obj;
 					return bestZeroIndex;
 				}
 			}
 			var ret = Heap.Count;
-			Heap.AddRange(list);
-			return ret;
-		}
-		
-		public static int LoadListToHeap(LinkedList<object> list)
-		{
-			if (DoesHeapContainSpaces)
-			{
-				var bestZeroInARow = 0;
-				var bestZeroIndex = 0;
-				var zeroInARow = 0;
-				var zeroIndex = 0;
-				for (var i = 0; i < Heap.Count; i++)
-				{
-					if (Heap[i] is string k && k == H0)
-					{
-						if (zeroInARow == 0)
-							zeroIndex = i;
-						zeroInARow += 1;
-						if (bestZeroInARow < zeroInARow)
-						{
-							bestZeroIndex = zeroIndex;
-							bestZeroInARow = zeroInARow;
-						}
-					}
-					else
-					{
-						zeroInARow = 0;
-						zeroIndex = 0;
-					}
-				}
-
-				if (bestZeroInARow >= list.Count)
-				{
-					var i = 0;
-					var en = list.GetEnumerator();
-					while (en.MoveNext())
-					{
-						Heap[bestZeroIndex + i] = en.Current;
-						i++;
-					}
-
-					en.Dispose();
-					return bestZeroIndex;
-				}
-			}
-			var ret = Heap.Count;
-			Heap.AddRange(list);
+			Heap.Add(obj);
 			return ret;
 		}
 	}
