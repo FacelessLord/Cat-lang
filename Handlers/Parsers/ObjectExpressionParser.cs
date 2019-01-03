@@ -37,21 +37,34 @@ namespace Cat.Handlers.Parsers
             else if (expr.IndexOf("|>>", StringComparison.Ordinal) != -1)
             {
                 var equalS = expr.IndexOf("|>>", StringComparison.Ordinal);
-                string variable = expr.Substring(0, equalS);
-                string result = expr.Substring(equalS + 3);
-                if (result == "out")
+                if (equalS == 0)
                 {
-                    if (variable.StartsWith("{") && variable.EndsWith("}"))
+                    Console.WriteLine("");
+                }
+                else
+                {
+                    string variable = expr.Substring(0, equalS);
+                    string result = expr.Substring(equalS + 3);
+                    if (result == "out")
                     {
-                        var vars = variable.Substring(1, variable.Length - 2).Split(',');
-                        for (int i = 0; i < vars.Length && i < vars.Length; i++)
+                        if (variable.StartsWith("{") && variable.EndsWith("}"))
                         {
-                            Console.WriteLine(variables[vars[i]]);
+                            var vars = ParseLexem(variable, variables);
+                            if (vars is CatArray arr)
+                            {
+                                var output = "";
+                                for (int i = 0; i < arr.Length && i < arr.Length; i++)
+                                {
+                                    output += arr[i];
+                                }
+
+                                Console.WriteLine(output);
+                            }
                         }
-                    }
-                    else
-                    {
-                        Console.WriteLine(variables[variable]);
+                        else
+                        {
+                            Console.WriteLine(ParseLexem(variable, variables));
+                        }
                     }
                 }
             }
@@ -60,54 +73,73 @@ namespace Cat.Handlers.Parsers
                 var equalS = expr.IndexOf(">>", StringComparison.Ordinal);
                 string variable = expr.Substring(0, equalS);
                 string result = expr.Substring(equalS + 2);
-                if (variable == "in")
+                if (equalS == 0)
                 {
-                    var input = Console.ReadLine();
-                    if (result.StartsWith("{") && result.EndsWith("}"))
+                    Console.WriteLine("");
+                }
+                else
+                {
+                    if (variable == "in")
                     {
-                        var vars = result.Substring(1, result.Length - 2).Split(',');
-                        var res = ParseLexem("{" + input + "}", variables);
-                        if (res is CatArray arr)
+                        var input = Console.ReadLine();
+                        if (result.StartsWith("{") && result.EndsWith("}"))
                         {
-                            for (int i = 0; i < vars.Length && i < arr.Length; i++)
+                            var vars = result.Substring(1, result.Length - 2).Split(',');
+                            var res = ParseLexem("{" + input + "}", variables);
+                            if (res is CatArray arr)
                             {
-                                SetVariable(vars[i], arr[i], variables);
+                                for (int i = 0; i < vars.Length && i < arr.Length; i++)
+                                {
+                                    SetVariable(vars[i], arr[i], variables);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        SetVariable(result, ParseLexem(input, variables), variables);
-                    }
-                }
-
-                if (result == "out")
-                {
-                    var delim = "";
-                    if (variable.IndexOf("|", StringComparison.Ordinal) != -1)
-                    {
-                        var pipe = variable.IndexOf("|", StringComparison.Ordinal);
-                        delim = variable.Substring(pipe + 1);
-                        delim = delim.Replace("\\s", " ");
-                            
-                        variable = variable.Substring(0, pipe);
-                    }
-                    if (variable.StartsWith("{") && variable.EndsWith("}"))
-                    {
-                        var vars = variable.Substring(1, variable.Length - 2).Split(',');
-                        var output = "";
-                        for (int i = 0; i < vars.Length && i < vars.Length; i++)
+                        else
                         {
-                            output += variables[vars[i]]+delim;
+                            SetVariable(result, ParseLexem(input, variables), variables);
+                        }
+                    }
+
+                    if (result.EndsWith("out"))
+                    {
+                        var delim = "";
+                        var end = "";
+                        if (result.StartsWith("."))
+                        {
+                            end = "\n";
+                        }
+                        if (variable.IndexOf("|", StringComparison.Ordinal) != -1)
+                        {
+                            var pipe = variable.IndexOf("|", StringComparison.Ordinal);
+                            delim = variable.Substring(pipe + 1);
+                            delim = delim.Replace("\\s", " ");
+                            delim = delim.Replace("\\a", ", ");
+
+                            variable = variable.Substring(0, pipe);
                         }
 
-                        if (delim.Length != 0)
-                            output = output.Substring(0, output.Length - delim.Length);
-                        Console.WriteLine(output);
-                    }
-                    else
-                    {
-                        Console.WriteLine(variables[variable]);
+                        if (variable.StartsWith("{") && variable.EndsWith("}"))
+                        {
+                            var vars = ParseLexem(variable, variables);
+                            if (vars is CatArray arr)
+                            {
+                                var output = "";
+                                for (int i = 0; i < arr.Length && i < arr.Length; i++)
+                                {
+                                    output += arr[i] + delim;
+                                }
+
+                                if (delim.Length != 0)
+                                    output = output.Substring(0, output.Length - delim.Length);
+                                Console.Write(output);
+                            }
+                            Console.Write(end);
+                        }
+                        else
+                        {
+                            Console.Write(ParseLexem(variable, variables));
+                            Console.Write(end);
+                        }
                     }
                 }
             }

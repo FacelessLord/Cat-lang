@@ -60,7 +60,8 @@ namespace Cat
             ObjectExpressionParser.ParseAndExecute("d={a,b,c}",Variables);
             ObjectExpressionParser.ParseAndExecute("{_,_,_,_}={a,b,c,d}",Variables);
             
-            ObjectExpressionParser.ParseAndExecute("{a,b,c,d}|,\\s >> out",Variables);
+            ObjectExpressionParser.ParseAndExecute("{a,b,c,d}|\\a >> .out",Variables);
+            ObjectExpressionParser.ParseAndExecute("{Pi,20r,\"asf\"}|\\a>> .out",Variables);
         }
 
         //Fieldname = 2 :: field is equal to 2
