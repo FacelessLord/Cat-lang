@@ -45,6 +45,10 @@
     <Compile Include="AbstractStructure\ICatStructureObject.cs" />
     <Compile Include="AbstractStructure\Modifier.cs" />
     <Compile Include="Calculators\ByteMath.cs" />
+    <Compile Include="Calculators\DoubleMath.cs" />
+    <Compile Include="Calculators\EMath.cs" />
+    <Compile Include="Calculators\Function.cs" />
+    <Compile Include="Calculators\Lexer.cs" />
     <Compile Include="CatClassLoader.cs" />
     <Compile Include="CatCore.cs" />
     <Compile Include="CatObjectLoader.cs" />
@@ -67,15 +71,9 @@
     <Compile Include="Utilities\MiscUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="classes\global.cls" />
-    <Content Include="classes\tst.cls" />
-    <Content Include="classes\tst2.cls" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\CalculatorConsole\CalculatorConsole.csproj">
-      <Project>{b8f8a9aa-85f0-48de-9054-eabae5987f3a}</Project>
-      <Name>CalculatorConsole</Name>
-    </ProjectReference>
+    <None Include="classes\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

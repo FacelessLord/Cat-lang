@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using CalculatorConsole;
 using Cat.AbstractStructure;
 using static Cat.CatCore;
 using Cat.Exceptions;

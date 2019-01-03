@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using CalculatorConsole;
 using static Cat.Calculators.ByteMath;
 
 namespace Cat.Calculators
@@ -60,11 +59,11 @@ namespace Cat.Calculators
         {
             switch (name)
             {
-                case "+": return new Sum(args);
-                case "-": return new Sub(args);
-                case "*": return new Prod(args);
-                case "/": return new Divide(args);
-                case "^": return new Power(args);
+                case "+": return new ByteSum(args);
+                case "-": return new ByteSub(args);
+                case "*": return new ByteProd(args);
+                case "/": return new ByteDivide(args);
+                case "^": return new BytePower(args);
                 default:
                     return new NulFunc<byte>(this);
             }
@@ -84,9 +83,9 @@ namespace Cat.Calculators
 	        return expr.Calculate(vars);
         }
     }
-    public class Sum : Function<byte>
+    public class ByteSum : Function<byte>
 	{
-		public Sum(params Expression<byte>[] args) : base(EMath, args)
+		public ByteSum(params Expression<byte>[] args) : base(EMath, args)
 		{
 		}
 
@@ -124,9 +123,9 @@ namespace Cat.Calculators
 		}
 	}
 
-	public class Power : Function<byte>
+	public class BytePower : Function<byte>
 	{
-		public Power(params Expression<byte>[] args) : base(EMath, args)
+		public BytePower(params Expression<byte>[] args) : base(EMath, args)
 		{
 		}
 
@@ -188,9 +187,9 @@ namespace Cat.Calculators
 		}
 	}
 
-	public class Sub : Function<byte>
+	public class ByteSub : Function<byte>
 	{
-		public Sub(params Expression<byte>[] args) : base(EMath, args)
+		public ByteSub(params Expression<byte>[] args) : base(EMath, args)
 		{
 		}
 
@@ -225,9 +224,9 @@ namespace Cat.Calculators
 		}
 	}
 
-	public class Prod : Function<byte>
+	public class ByteProd : Function<byte>
 	{
-		public Prod(params Expression<byte>[] args) : base(EMath, args)
+		public ByteProd(params Expression<byte>[] args) : base(EMath, args)
 		{
 		}
 
@@ -259,9 +258,9 @@ namespace Cat.Calculators
 		}
 	}
 
-	public class Divide : Function<byte>
+	public class ByteDivide : Function<byte>
 	{
-		public Divide(params Expression<byte>[] args) : base(EMath, args)
+		public ByteDivide(params Expression<byte>[] args) : base(EMath, args)
 		{
 		}
 
@@ -296,9 +295,9 @@ namespace Cat.Calculators
 		}
 	}
 
-	public class Mod : Function<byte>
+	public class ByteMod : Function<byte>
 	{
-		public Mod(params Expression<byte>[] args) : base(EMath, args)
+		public ByteMod(params Expression<byte>[] args) : base(EMath, args)
 		{
 		}
 
@@ -333,9 +332,9 @@ namespace Cat.Calculators
 		}
 	}
 
-	public class Div : Function<byte>
+	public class ByteDiv : Function<byte>
 	{
-		public Div(params Expression<byte>[] args) : base(EMath, args)
+		public ByteDiv(params Expression<byte>[] args) : base(EMath, args)
 		{
 		}
 

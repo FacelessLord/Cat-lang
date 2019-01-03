@@ -5,7 +5,6 @@ using System.Linq;
 using System.Numerics;
 using static Cat.HeapHandler;
 using static Cat.Structure.Modifier;
-using CalculatorConsole;
 using Cat.AbstractStructure;
 using Cat.Primitives;
 using Cat.Primitives.Precise;

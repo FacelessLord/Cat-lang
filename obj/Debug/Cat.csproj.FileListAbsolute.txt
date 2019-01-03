@@ -1,0 +1,9 @@
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.csprojAssemblyReference.cache
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.csproj.CoreCompileInputs.cache
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/classes/global.cls
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/classes/tst.cls
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/classes/tst2.cls
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/Cat.exe
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/Cat.pdb
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.exe
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.pdb
