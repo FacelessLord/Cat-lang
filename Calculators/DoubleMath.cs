@@ -189,7 +189,7 @@ namespace Cat.Calculators
 
 		protected override double Call(params double[] arguments)
 		{
-			return Math.Pow(arguments[0], arguments[1]);
+			return System.Math.Pow(arguments[0], arguments[1]);
 		}
 	}
 

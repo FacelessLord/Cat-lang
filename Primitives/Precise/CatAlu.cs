@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace Cat.Primitives.Precise
 {
@@ -7,22 +8,31 @@ namespace Cat.Primitives.Precise
     {
         public static CatPrecise Sum(CatPrecise a, CatPrecise b)
         {
-            while (a._order < b._order)
+            while (a.Order < b.Order)
             {
-                a._digits.Insert(0, '0');
-                a._order++;
+                a.Digits.Insert(0, '0');
+                a.Order++;
             }
 
-            while (a._order > b._order)
+            while (a.Order > b.Order)
             {
-                b._digits.Insert(0, '0');
-                b._order++;
+                b.Digits.Insert(0, '0');
+                b.Order++;
             }
-            int asign = a._lessThanZero ? -1 : 1;
-            int bsign = b._lessThanZero ? -1 : 1;
-            var (lastOverflowSign,lastOverflow,result) = SumCharLists(asign, a._digits, bsign, b._digits);
+            while (a.Digits.Count < b.Digits.Count)
+            {
+                a.Digits.Add( '0');
+            }
 
-            int ord = a._order;
+            while (a.Digits.Count > b.Digits.Count)
+            {
+                b.Digits.Add( '0');
+            }
+            int asign = a.LessThanZero ? -1 : 1;
+            int bsign = b.LessThanZero ? -1 : 1;
+            var (lastOverflowSign,lastOverflow,result) = SumCharLists(asign, a.Digits, bsign, b.Digits);
+
+            int ord = a.Order;
 
             if (lastOverflowSign < 0)
             {
@@ -46,7 +56,7 @@ namespace Cat.Primitives.Precise
             }
 
             List<char> period = new List<char>();
-            if (a._havePeriod || b._havePeriod)
+            if (a.HavePeriod || b.HavePeriod)
             {
                 var (aPeriodList,bPeriodList) = CreateTwoPeriods(a, b);
 
@@ -68,7 +78,7 @@ namespace Cat.Primitives.Precise
             b.Validate();
             var resultPrecise = new CatPrecise(0)
             {
-                _digits = result, _lessThanZero = lastOverflowSign < 0, _order = ord
+                Digits = result, LessThanZero = lastOverflowSign < 0, Order = ord
             };
             if (period.Count > 0)
             {
@@ -83,24 +93,24 @@ namespace Cat.Primitives.Precise
             var aPeriod = new List<char>();
             var bPeriod = new List<char>();
             
-            if (a._havePeriod)
+            if (a.HavePeriod)
             {
-                if (b._havePeriod)
+                if (b.HavePeriod)
                 {
-                    for (var ai = 0; ai < b._period.Count; ai++)
+                    for (var ai = 0; ai < b.Period.Count; ai++)
                     {
-                        aPeriod.AddRange(a._period);
+                        aPeriod.AddRange(a.Period);
                     }
-                    for (var bi = 0; bi < a._period.Count; bi++)
+                    for (var bi = 0; bi < a.Period.Count; bi++)
                     {
-                        bPeriod.AddRange(b._period);
+                        bPeriod.AddRange(b.Period);
                     }
                 }
                 else
                 {
-                    aPeriod = a._period;
+                    aPeriod = a.Period;
                         
-                    for (var bi = 0; bi < a._period.Count; bi++)
+                    for (var bi = 0; bi < a.Period.Count; bi++)
                     {
                         bPeriod.Add('0');
                     }
@@ -108,9 +118,9 @@ namespace Cat.Primitives.Precise
             }
             else
             {
-                bPeriod = b._period;
+                bPeriod = b.Period;
 
-                for (var bi = 0; bi < b._period.Count; bi++)
+                for (var bi = 0; bi < b.Period.Count; bi++)
                 {
                     aPeriod.Add('0');
                 }
@@ -146,19 +156,19 @@ namespace Cat.Primitives.Precise
             return (lastOverflowSign, lastOverflow, result);
         }
 
-        public static int periodLength = 50;
+        public static int PeriodLength = 50;
 
         public static CatPrecise Multiply(CatPrecise a, CatPrecise b)
         {
-            var dIndex = a._digits.Count - a._order + b._digits.Count - b._order+(a._havePeriod ? periodLength : 0)+(b._havePeriod ? periodLength : 0);
-            int aSign = a._lessThanZero ? -1 : 1;
-            int bSign = b._lessThanZero ? -1 : 1;
+            var dIndex = a.Digits.Count - a.Order + b.Digits.Count - b.Order+(a.HavePeriod ? PeriodLength : 0)+(b.HavePeriod ? PeriodLength : 0);
+            int aSign = a.LessThanZero ? -1 : 1;
+            int bSign = b.LessThanZero ? -1 : 1;
             var sign = aSign * bSign;
-            var resInts = new int[a._digits.Count +(a._havePeriod ? periodLength : 0)+ b._digits.Count + 1+(b._havePeriod ? periodLength : 0)];
-            for (var i = 0; i < a._digits.Count + (a._havePeriod ? periodLength : 0); i++)
-            for (var j = 0; j < b._digits.Count + (b._havePeriod ? periodLength : 0); j++)
+            var resInts = new int[a.Digits.Count +(a.HavePeriod ? PeriodLength : 0)+ b.Digits.Count + 1+(b.HavePeriod ? PeriodLength : 0)];
+            for (var i = 0; i < a.Digits.Count + (a.HavePeriod ? PeriodLength : 0); i++)
+            for (var j = 0; j < b.Digits.Count + (b.HavePeriod ? PeriodLength : 0); j++)
             {
-                var (overflow, res) = DigitIntMult(a[a._digits.Count - 1 - i+(a._havePeriod ? periodLength : 0)], b[b._digits.Count - 1 - j+(b._havePeriod ? periodLength : 0)]);
+                var (overflow, res) = DigitIntMult(a[a.Digits.Count - 1 - i+(a.HavePeriod ? PeriodLength : 0)], b[b.Digits.Count - 1 - j+(b.HavePeriod ? PeriodLength : 0)]);
                 resInts[i + j] += res;
                 resInts[i + j + 1] += overflow;
             }
@@ -181,27 +191,34 @@ namespace Cat.Primitives.Precise
             }
 
             var cutLength = result.Count;
-            if (a._havePeriod)
+            if (a.HavePeriod)
             {
-                cutLength -= periodLength / 2;
+                cutLength -= PeriodLength / 2;
             }
-            if (b._havePeriod)
+            if (b.HavePeriod)
             {
-                cutLength -= periodLength / 2;
+                cutLength -= PeriodLength / 2;
             }
 
             var oldLength = result.Count;
             result = result.GetRange(0, cutLength);
 
             var resultPrecise = new CatPrecise(0)
-                {_digits = result, _lessThanZero = sign < 0, _order = oldLength - dIndex};
+                {Digits = result, LessThanZero = sign < 0, Order = oldLength - dIndex};
             resultPrecise.Validate();
             return resultPrecise;
         }
 
         public static CatPrecise Divide(CatPrecise a, CatPrecise b)
         {
-            return null;
+            var bia = BigInteger.Parse(a.ToString().Replace(".", "")) * BigInteger.Parse("100000000000000000000");
+            var bib = BigInteger.Parse(b.ToString().Replace(".", ""));
+            var aord = a.Order;
+            var bord = b.Order;
+            var dia = bia / bib;
+            var pra = new CatPrecise(dia.ToString()) {Order = Math.Max(0, aord-bord + (aord == bord ? 1 : 0))};
+
+            return pra;
         }
 
 

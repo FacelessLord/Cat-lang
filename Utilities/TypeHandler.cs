@@ -28,13 +28,13 @@ namespace Cat
 
             if (value is CatCompoundObject cco)
             {
-                var obj = cco._typeClass;
-                while (obj._parent != null && obj._name != type)
+                var obj = cco.TypeClass;
+                while (null != obj.Parent && obj.Name != type)
                 {
-                    obj = obj._parent;
+                    obj = obj.Parent;
                 }
 
-                if (obj._name == type)
+                if (obj.Name == type)
                 {
                     return obj;
                 }
@@ -61,7 +61,9 @@ namespace Cat
         /// Primitive types have code equal to (-1-IndexOf(primitive))
         /// </remarks>
         public static List<string> Primitives { get; } = new List<string>()
-            {"byte", "int", "long", "angle", "string", "bool", "float", "double", "precise", "object"};
+            {"void","byte", "int", "long", "angle", "string", "bool", "float", "double", "precise","index", "range", "object","null"};
+        
+        public static CatNull Null= new CatNull();
         
         public static bool IsPrimitive(string type)
         {

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cat.AbstractStructure;
-using Cat.Exceptions;
 using static Cat.CatCore;
 
 namespace Cat.Structure
@@ -12,27 +11,27 @@ namespace Cat.Structure
 		/// <summary>
 		/// Properties of this Class
 		/// </summary>
-		public CatProperty[] _properties;
+		public CatProperty[] Properties;
 
 		/// <summary>
 		/// Name of this Class to find in "Classes"
 		/// </summary>
-		public string _name;
+		public string Name;
 
 		/// <summary>
 		/// Parent class name for inheritance
 		/// </summary>
-		public CatClass _parent;
+		public CatClass Parent;
 
-		public CatClass(string name, params CatProperty[] properties)
+		public CatClass(string name, params CatProperty[] properties) : base("class")
 		{
-			_name = name;
-			_properties = properties;
+			Name = name;
+			Properties = properties;
 		}
 
 		public CatClass SetParentClass(CatClass parent)
 		{
-			_parent = parent;
+			Parent = parent;
 			return this;
 		}
 
@@ -49,30 +48,30 @@ namespace Cat.Structure
 		/// <returns></returns>
 		public CatCompoundObject CreateObjectFromClass()
 		{
-			var newProperties = new CatProperty[_properties.Length];
-			for (int i = 0; i < _properties.Length; i++)
+			var newProperties = new CatProperty[Properties.Length];
+			for (int i = 0; i < Properties.Length; i++)
 			{
-				newProperties[i] =(CatProperty) _properties[i].Clone();
+				newProperties[i] =(CatProperty) Properties[i].Clone();
 			}
 			var cco = new CatCompoundObject(this,newProperties);
-			cco.SetParentClass(_parent);
+			cco.SetParentClass(Parent);
 			return cco;                                    
 		}
 
 		public void InjectProperty(CatProperty property)
 		{
-			_properties = _properties.Append(property).ToArray();
+			Properties = Properties.Append(property).ToArray();
 		}
 
 		public CatProperty GetProperty(string name)
 		{
-			return _properties.FirstOrDefault(property => property._name == name);
+			return Properties.FirstOrDefault(property => property.Name == name);
 		}
 
 		~CatClass()
 		{
-			_parent = null;
-			_properties = null;
+			Parent = null;
+			Properties = null;
 		}
 	}
 }

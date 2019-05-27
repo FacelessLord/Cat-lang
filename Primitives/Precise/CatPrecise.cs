@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Cat.AbstractStructure;
 using Cat.Structure;
 using Cat.Utilities;
 
@@ -10,16 +11,38 @@ namespace Cat.Primitives.Precise
     /// <summary>
     /// Representation of a number that have valuable decimal digits 
     /// </summary>
-    public class CatPrecise : CatPrimitiveObject
+    public class CatPrecise : CatNumber
     {
-        public static CatPrecise Pi = new CatPrecise("3.1415926535 8979323846 2643383279 5028841971 6939937510 5820974944 5923078164 0628620899 8628034825 3421170679 8214808651 3282306647 0938446095 5058223172 5359408128 4811174502 8410270193 8521105559");
-        public static CatPrecise Tau = Pi * 2;
-        public static CatPrecise E = new CatPrecise("2.7182818284 5904523536 0287471352 6624977572 4709369995 9574966967 6277240766 3035354759 4571382178 5251664274 2746639193 2003059921 8174135966 2904357290 0334295260 5956307381 3232862794 3490763233");
-        
-        public List<char> _digits = new List<char>();
+        public static CatPrecise Pi =
+            new CatPrecise(
+                "3.1415926535 8979323846 2643383279 5028841971 6939937510 5820974944 5923078164 0628620899 8628034825 3421170679 8214808651 3282306647 0938446095 5058223172 5359408128 4811174502 8410270193 8521105559");
 
-        public bool _havePeriod;
-        public List<char> _period = new List<char>();
+        public static CatPrecise Tau = Pi * 2;
+
+        public static CatPrecise E =
+            new CatPrecise(
+                "2.7182818284 5904523536 0287471352 6624977572 4709369995 9574966967 6277240766 3035354759 4571382178 5251664274 2746639193 2003059921 8174135966 2904357290 0334295260 5956307381 3232862794 3490763233");
+
+        public List<char> Digits = new List<char>();
+
+        public bool HavePeriod;
+        private List<char> _period = new List<char>();
+
+        public override CatStructureObject GetFieldValue(string field)
+        {
+            var baseRet = base.GetFieldValue(field);
+            switch (field)
+            {
+                case "havePeriod": return new CatBool(HavePeriod);
+                case "period": return new CatString(MiscUtils.ArrayToString(_period.ToArray()));
+                case "digits": return new CatString(MiscUtils.ArrayToString(Digits.ToArray()));
+                case "integerDigitsCount": return new CatInt(Order);
+                case "lessThanZero": return new CatBool(LessThanZero);
+                case "hashCode": return new CatInt(GetHashCode());
+            }
+
+            return baseRet;
+        }
 
         public List<char> Period
         {
@@ -27,7 +50,7 @@ namespace Cat.Primitives.Precise
             set
             {
                 _period = value;
-                _havePeriod = !(value is null);
+                HavePeriod = !(value is null);
             }
         }
 
@@ -35,21 +58,21 @@ namespace Cat.Primitives.Precise
         {
             get
             {
-                if(i<_digits.Count)
-                    return _digits[i];
-                if (_havePeriod)
-                    return _period[(i-_digits.Count) % _period.Count];
+                if (i < Digits.Count && i >=0)
+                    return Digits[i];
+                if (HavePeriod)
+                    return _period[(i - Digits.Count) % _period.Count];
                 return '0';
             }
-            set => _digits[i] = value;
+            set => Digits[i] = value;
         }
 
         /// <summary>
         /// first {order} digits are for integer part
         /// </summary>
-        public int _order = 1;
+        public int Order = 1;
 
-        public bool _lessThanZero = false;
+        public bool LessThanZero = false;
 
         public CatPrecise(object value) : base("precise")
         {
@@ -57,8 +80,8 @@ namespace Cat.Primitives.Precise
             {
                 case 0:
                 {
-                    _digits.Add('0');
-                    _order = 1;
+                    Digits.Add('0');
+                    Order = 1;
                     break;
                 }
                 case double d:
@@ -122,7 +145,7 @@ namespace Cat.Primitives.Precise
         public static CatPrecise operator -(CatPrecise a)
         {
             var ta = (CatPrecise) a.MemberwiseClone();
-            ta._lessThanZero = !ta._lessThanZero;
+            ta.LessThanZero = !ta.LessThanZero;
             return ta;
         }
 
@@ -140,11 +163,25 @@ namespace Cat.Primitives.Precise
         {
             return CatAlu.Multiply(a, new CatPrecise(b + ""));
         }
+        public static CatPrecise operator /(CatPrecise a, CatPrecise b)
+        {
+            return CatAlu.Divide(a, b);
+        }
+
+        public static CatPrecise operator /(double a, CatPrecise b)
+        {
+            return CatAlu.Divide(new CatPrecise(a + ""), b);
+        }
+
+        public static CatPrecise operator /(CatPrecise a, double b)
+        {
+            return CatAlu.Divide(a, new CatPrecise(b + ""));
+        }
 
         public static CatPrecise operator !(CatPrecise a)
         {
             var ta = (CatPrecise) a.MemberwiseClone();
-            ta._lessThanZero = false;
+            ta.LessThanZero = false;
             return ta;
         }
 
@@ -160,23 +197,23 @@ namespace Cat.Primitives.Precise
 
         public static bool operator <(CatPrecise a, CatPrecise b)
         {
-            if (a._order > b._order || a._digits.Count > b._digits.Count)
+            if (a.Order > b.Order || a.Digits.Count > b.Digits.Count)
             {
                 return false;
             }
 
-            if (a._order < b._order || a._digits.Count < b._digits.Count)
+            if (a.Order < b.Order || a.Digits.Count < b.Digits.Count)
             {
                 return true;
             }
 
             int i = 0;
-            while (i < a._digits.Count+1 && a[i] == b[i])
+            while (i < a.Digits.Count + 1 && a[i] == b[i])
             {
                 i++;
             }
 
-            if (i < a._digits.Count) //didn't went to the end
+            if (i < a.Digits.Count) //didn't went to the end
             {
                 return a[i] < b[i];
             }
@@ -186,23 +223,23 @@ namespace Cat.Primitives.Precise
 
         public static bool operator >(CatPrecise a, CatPrecise b)
         {
-            if (a._order < b._order || a._digits.Count < b._digits.Count)
+            if (a.Order < b.Order || a.Digits.Count < b.Digits.Count)
             {
                 return false;
             }
 
-            if (a._order > b._order || a._digits.Count > b._digits.Count)
+            if (a.Order > b.Order || a.Digits.Count > b.Digits.Count)
             {
                 return true;
             }
 
             int i = 0;
-            while (i < a._digits.Count+1 && a[i] == b[i])
+            while (i < a.Digits.Count + 1 && a[i] == b[i])
             {
                 i++;
             }
 
-            if (i < a._digits.Count) //didn't went to the end
+            if (i < a.Digits.Count) //didn't went to the end
             {
                 return a[i] > b[i];
             }
@@ -222,18 +259,18 @@ namespace Cat.Primitives.Precise
                 return true;
             }
 
-            if (a._order != b._order || a._digits.Count != b._digits.Count)
+            if (a.Order != b.Order || a.Digits.Count != b.Digits.Count)
             {
                 return false;
             }
 
             var i = 0;
-            while (i < a._digits.Count && a._digits[i] == b._digits[i])
+            while (i < a.Digits.Count && a.Digits[i] == b.Digits[i])
             {
                 i++;
             }
 
-            return i == a._digits.Count;
+            return i == a.Digits.Count;
         }
 
         public static bool operator !=(CatPrecise a, CatPrecise b)
@@ -244,22 +281,22 @@ namespace Cat.Primitives.Precise
 
         public void Validate()
         {
-            while (_digits[0] == '0' && _order > 1)
+            while (Digits[0] == '0' && Order > 1)
             {
-                _digits.RemoveAt(0);
-                _order--;
+                Digits.RemoveAt(0);
+                Order--;
             }
 
-            while (_digits.Count > 0 && _digits[_digits.Count - 1] == '0' && _digits.Count > _order)
+            while (Digits.Count > 0 && Digits[Digits.Count - 1] == '0' && Digits.Count > Order)
             {
-                _digits.RemoveAt(_digits.Count - 1);
+                Digits.RemoveAt(Digits.Count - 1);
             }
         }
 
         public void FromString(string s)
         {
             s = s.Replace(" ", "");
-            _lessThanZero = s.StartsWith("-");
+            LessThanZero = s.StartsWith("-");
 
             if (s.StartsWith("-") || s.StartsWith("+"))
             {
@@ -282,20 +319,20 @@ namespace Cat.Primitives.Precise
 
             for (var i = 0; i < intPtStr.Length; i++)
             {
-                _digits.Add(intPtStr[i]);
+                Digits.Add(intPtStr[i]);
                 CheckDigit(intPtStr[i], s);
             }
 
-            _order = intPtStr.Length;
-            if (_order == 0)
+            Order = intPtStr.Length;
+            if (Order == 0)
             {
-                _order = 1;
-                _digits.Add('0');
+                Order = 1;
+                Digits.Add('0');
             }
 
             for (var i = 0; i < decPtStr.Length; i++)
             {
-                _digits.Add(decPtStr[i]);
+                Digits.Add(decPtStr[i]);
                 CheckDigit(decPtStr[i], s);
             }
         }
@@ -323,66 +360,67 @@ namespace Cat.Primitives.Precise
 
             while (ord < 0)
             {
-                _digits.Add('0');
+                Digits.Add('0');
                 ord++;
             }
 
             while (ad > 0)
             {
-                _digits.Add(GetDigit(ad % 10));
+                Digits.Add(GetDigit(ad % 10));
                 ad -= (int) ad % 10;
                 ad *= 10;
             }
 
-            _lessThanZero = d < 0;
+            LessThanZero = d < 0;
         }
 
         public override string ToString()
         {
-            var sgn = (_lessThanZero ? "-" : "");
+            var sgn = (LessThanZero ? "-" : "");
             var intPt = new StringBuilder();
             var decPt = new StringBuilder();
-            for (var i = 0; i < _order; i++)
+            for (var i = 0; i < Order; i++)
             {
                 intPt.Append(this[i]);
             }
 
-            for (var i = _order; i < _digits.Count; i++)
+            for (var i = Order; i < Digits.Count; i++)
             {
                 decPt.Append(this[i]);
             }
+
             var periodStr = new StringBuilder();
-            if (_havePeriod)
+            if (HavePeriod)
             {
-                periodStr.Append($"({MiscUtils.ArrayToString(_period.ToArray(),delimiter:"")})");
+                periodStr.Append($"({MiscUtils.ArrayToString(_period.ToArray(), delimiter: "")})");
             }
 
             return sgn + intPt.Append((decPt.Length > 0 || periodStr.Length > 0 ? (".") : "") + decPt + periodStr);
         }
-        
+
         public CatPrecise WithDigits(int num)
         {
             var newDigits = new List<char>();
-            for(var i=0;i<num;i++)
+            for (var i = 0; i < num; i++)
                 newDigits.Add(this[i]);
-            return new CatPrecise(0){_digits = newDigits, _order = _order};
+            return new CatPrecise(0) {Digits = newDigits, Order = Order};
         }
 
         public string ToExponentialForm(int precision = 8)
         {
-            int mantStart = _order;
-            while (this[_order - mantStart] == '0')
+            int mantStart = Order;
+            while (this[Order - mantStart] == '0')
             {
                 mantStart--;
             }
 
             var res = new StringBuilder();
-            res.Append(this[_order - mantStart]);
+            res.Append(this[Order - mantStart]);
             res.Append('.');
 
             for (var i = 1; i < precision; i++)
             {
-                res.Append(this[_order - mantStart + i]);
+                res.Append(this[Order - mantStart + i]);
             }
 
             while (res[res.Length - 1] == '0')
@@ -434,9 +472,9 @@ namespace Cat.Primitives.Precise
 
         protected bool Equals(CatPrecise other)
         {
-            return Equals(_digits, other._digits) && _havePeriod == other._havePeriod &&
-                    Equals(_period, other._period) && _order == other._order &&
-                   _lessThanZero == other._lessThanZero;
+            return Equals(Digits, other.Digits) && HavePeriod == other.HavePeriod &&
+                   Equals(_period, other._period) && Order == other.Order &&
+                   LessThanZero == other.LessThanZero;
         }
 
         public override bool Equals(object obj)
@@ -463,13 +501,72 @@ namespace Cat.Primitives.Precise
         {
             unchecked
             {
-                var hashCode = (_digits != null ? _digits.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ _havePeriod.GetHashCode();
+                var hashCode = (Digits != null ? Digits.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ HavePeriod.GetHashCode();
                 hashCode = (hashCode * 397) ^ (_period != null ? _period.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ _order;
-                hashCode = (hashCode * 397) ^ _lessThanZero.GetHashCode();
+                hashCode = (hashCode * 397) ^ Order;
+                hashCode = (hashCode * 397) ^ LessThanZero.GetHashCode();
                 return hashCode;
             }
+        }
+
+        public override bool IsBiggerThan(Type b)
+        {
+            return b != typeof(CatPrecise);
+        }
+
+        public override CatNumber CastTo(Type b)
+        {
+            switch (b.Name)
+            {
+                case "CatByte":
+                    return ToByte();
+                case "CatInt":
+                    return ToInt();
+                case "CatLong":
+                    return ToLong();
+                case "CatFloat":
+                    return ToFloat();
+                case "CatDouble":
+                    return ToDouble();
+                case "CatPrecise":
+                    return this;
+            }
+
+            throw new InvalidCastException();
+        }
+
+        public override CatByte ToByte()
+        {
+            var str = ToString();
+            return new CatByte((byte) double.Parse(str));
+        }
+
+        public override CatInt ToInt()
+        {
+            var str = ToString();
+            return new CatInt((int) double.Parse(str));
+        }
+
+        public override CatLong ToLong()
+        {
+            var str = ToString();
+            return new CatLong((long) double.Parse(str));
+        }
+
+        public override CatFloat ToFloat()
+        {
+            return new CatFloat(ToString());
+        }
+
+        public override CatDouble ToDouble()
+        {
+            return new CatDouble(ToString());
+        }
+
+        public override CatPrecise ToPrecise()
+        {
+            return this;
         }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Cat.AbstractStructure;
 using static Cat.CatCore;
-using Cat.Exceptions;
 
 namespace Cat.Structure
 {
@@ -23,12 +22,12 @@ namespace Cat.Structure
 
 		public override object Clone()
 		{
-			var newSignature = new string[_signature.Length];
-			for (int i = 0; i < _signature.Length; i++)
+			var newSignature = new string[Signature.Length];
+			for (int i = 0; i < Signature.Length; i++)
 			{
-				newSignature[i] = _signature[i];
+				newSignature[i] = Signature[i];
 			}
-			return new CatConstructor(_name,newSignature,_returnType,_class,_line){_modifiers = _modifiers};
+			return new CatConstructor(Name,newSignature,ReturnType,Class,Line){Modifiers = Modifiers};
 		}
 	}
 }

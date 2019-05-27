@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using static Cat.HeapHandler;
 using static Cat.Structure.Modifier;
 using Cat.AbstractStructure;
+using Cat.Handlers;
 using Cat.Handlers.Parsers;
 using Cat.Primitives;
 using Cat.Primitives.Precise;
@@ -29,7 +31,7 @@ namespace Cat
         /// Whether there was removing in Heap
         /// </summary>
         public static bool DoesHeapContainSpaces = false;
-        
+
         /// <summary>
         /// Count of remove operations on Heap
         /// </summary>
@@ -45,23 +47,32 @@ namespace Cat
         /// </summary>
         public const string V0 = "V\0";
 
-        public static Dictionary<string, CatStructureObject> Variables = new Dictionary<string, CatStructureObject>();
-        
         private static void Main(string[] args)
         {
-            Variables.Add("_Pi_",CatPrecise.Pi);
-            Variables.Add("_Tau_",CatPrecise.Tau);
-            Variables.Add("_E_",CatPrecise.E);
-            Variables.Add("Pi",CatPrecise.Pi.WithDigits(10));
-            Variables.Add("Tau",CatPrecise.Tau.WithDigits(10));
-            Variables.Add("E",CatPrecise.E.WithDigits(10));
-            
-            ObjectExpressionParser.ParseAndExecute("{a,b,c}={Pi,20r,\"asf\"}",Variables);
-            ObjectExpressionParser.ParseAndExecute("d={a,b,c}",Variables);
-            ObjectExpressionParser.ParseAndExecute("{_,_,_,_}={a,b,c,d}",Variables);
-            
-            ObjectExpressionParser.ParseAndExecute("{a,b,c,d}|\\a >> .out",Variables);
-            ObjectExpressionParser.ParseAndExecute("{Pi,20r,\"asf\"}|\\a>> .out",Variables);
+
+            LinearExpressionHandler.Load();
+            //doLoadBigConstants
+//            Variables.Add("_Pi_",CatPrecise.Pi);
+//            Variables.Add("_Tau_",CatPrecise.Tau);
+//            Variables.Add("_E_",CatPrecise.E);
+            LinearExpressionHandler.Scope.AddVariable("Pi", CatPrecise.Pi.WithDigits(10));
+            LinearExpressionHandler.Scope.AddVariable("Tau", CatPrecise.Tau.WithDigits(10));
+            LinearExpressionHandler.Scope.AddVariable("E", CatPrecise.E.WithDigits(10));
+            //ObjectExpressionParser.ParseAndExecute("(a = \"asf\")",Variables);
+//            ObjectExpressionParser.Run("a = {0,1,2,3}",
+//                Variables);
+            string file = "classes/main.cls";
+            var lines = File.ReadLines(file);
+            var line = "";
+            foreach (var l in lines)
+            {
+                line += l;
+            }
+
+            LinearExpressionHandler.Run(line);
+
+
+            //ObjectExpressionParser.ParseAndExecute("a >> .out",Variables);
         }
 
         //Fieldname = 2 :: field is equal to 2
@@ -72,22 +83,23 @@ namespace Cat
         /// <summary>
         /// Mapping from type name to index of type in heap
         /// </summary>
-        public static readonly Dictionary<string,int> Types = new Dictionary<string, int>();
+        public static readonly Dictionary<string, int> Types = new Dictionary<string, int>();
+
         /// <summary>
-        /// Mapping from type name to index of type in heap
+        /// Mapping from type name to Class
         /// </summary>
-        public static readonly Dictionary<string,CatClass> Classes = new Dictionary<string, CatClass>();
-        
+        public static readonly Dictionary<string, CatClass> Classes = new Dictionary<string, CatClass>();
+
         /// <summary>
         /// Fully loaded class files
         /// </summary>
-        public static readonly Dictionary<string,string[]> ClassFiles = new Dictionary<string,string[]>();
+        public static readonly Dictionary<string, string[]> ClassFiles = new Dictionary<string, string[]>();
 //        
 //        /// <summary>
 //        /// Fully loaded class files
 //        /// </summary>
 //        public static readonly Dictionary<string,CatClass> Classes = new Dictionary<string,CatClass>();
-        
+
         public static CatClass GetClassForName(string name)
         {
             return Classes[name];

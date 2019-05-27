@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cat.AbstractStructure;
-using Cat.Exceptions;
+using Cat.Primitives;
 using static Cat.CatCore;
 
 namespace Cat.Structure
@@ -10,17 +10,16 @@ namespace Cat.Structure
 	/// <summary>
 	/// Wrapper class for Cat objects
 	/// </summary>
-	public class CatPrimitiveObject : CatObject
+	public class CatPrimitiveObject : CatStructureObject
 	{
 		public CatPrimitiveObject(string type) : base(type)
 		{
 		}
-
-		private static readonly CatPrimitiveObject NullObject = new CatPrimitiveObject("int");
-
-		public static CatPrimitiveObject NewInstance()
+		
+		public override string ToString()
 		{
-			return NullObject;
+			return Type;
 		}
+
 	}
 }

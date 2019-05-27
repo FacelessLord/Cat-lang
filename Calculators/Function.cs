@@ -54,7 +54,7 @@ namespace Cat.Calculators
 
 		protected override T Call(params T[] arguments)
 		{
-			return _math._zero;
+			return Math.Zero;
 		}
 	}
 
@@ -110,7 +110,7 @@ namespace Cat.Calculators
 					return args[i].value;
 				}
 
-			return _math._zero;
+			return Math.Zero;
 		}
 	}
 }

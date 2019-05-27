@@ -7,11 +7,11 @@ namespace Cat.Calculators
 
 	public abstract class Expression<T>
 	{
-		public EMath<T> _math;
+		public EMath<T> Math;
 
 		public Expression(EMath<T> math)
 		{
-			_math = math;
+			Math = math;
 		}
 
 		public abstract T Calculate(params (string name, T value)[] args);
@@ -23,10 +23,10 @@ namespace Cat.Calculators
 	{
 		public EMath(T zero)
 		{
-			_zero = zero;
+			Zero = zero;
 		}
 
-		public T _zero;
+		public T Zero;
 
 		public Expression<T> Get(object arg)
 		{
@@ -39,7 +39,7 @@ namespace Cat.Calculators
 				case string s:
 					return new Var<T>(this,s);
 				default:
-					return new Number<T>(this, _zero);
+					return new Number<T>(this, Zero);
 			}
 		}
 
@@ -69,7 +69,7 @@ namespace Cat.Calculators
 		private Expression<T> ParseExpression(IReadOnlyCollection<string> lexedInput)
 		{
 			if (lexedInput.Count == 0)
-				return new Number<T>(this, _zero);
+				return new Number<T>(this, Zero);
 
 			var stack = new Stack<string>();
 			var lexems = new List<string>(); // this will contain RPN

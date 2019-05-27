@@ -11,7 +11,7 @@ namespace Cat
     public static class CatClassLoader
     {
 
-        public static string basePath = "classes/";
+        public static string BasePath = "classes/";
         /// <summary>
         /// Loads class internal fields to use them in program to create objects
         /// </summary>
@@ -19,7 +19,7 @@ namespace Cat
         /// <returns></returns>
         public static (CatClass clazz,int index) LoadClassFile(string fileName)
         {
-            var lines = File.ReadAllLines(basePath+fileName);
+            var lines = File.ReadAllLines(BasePath+fileName);
 
             var search = false;
             var className = "";
@@ -93,7 +93,7 @@ namespace Cat
                                 signature = signature.Trim();
                                 string link = fileName + ":" + i; //i-th line of file:className.cls
                                 string[] sign = signature.Split('~');
-                                var rawMethod = new CatMethod(sign[0].Trim(), sign[1].Trim(), className.Trim(), i) {_modifiers = modifiers};
+                                var rawMethod = new CatMethod(sign[0].Trim(), sign[1].Trim(), className.Trim(), i) {Modifiers = modifiers};
                                 classProperties.Add(rawMethod);
                                 
                                 j = k;
@@ -113,7 +113,7 @@ namespace Cat
 
                                 signature = signature.Trim();
                                 string link = fileName + ":" + i; //i-th line of file:className.cls
-                                var rawMethod = new CatConstructor(signature,"", className.Trim(), i) {_modifiers = modifiers};
+                                var rawMethod = new CatConstructor(signature,"", className.Trim(), i) {Modifiers = modifiers};
                                 classProperties.Add(rawMethod);
                                 
                                 j = k;
@@ -139,7 +139,7 @@ namespace Cat
 
                                 if (expr == "")
                                     expr = V0;
-                                var rawField = new CatField(name.Trim(), type.Trim(), expr.Trim()) {_modifiers = modifiers};
+                                var rawField = new CatField(name.Trim(), type.Trim(),null) {Modifiers = modifiers};//todo null
                                 classProperties.Add(rawField);
                                 j += 4;
                                 modifiers = 0;
@@ -197,11 +197,11 @@ namespace Cat
 
                 Types.Add(className, ret);
 
-                foreach (var prop in clazz._properties)
+                foreach (var prop in clazz.Properties)
                 {
                     if (prop is CatConstructor constr)
                     {
-                        constr._returnType = ret;
+                        constr.ReturnType = ret;
                     }
                 }
                 

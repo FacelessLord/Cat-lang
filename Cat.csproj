@@ -32,16 +32,28 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FluentAssertions, Version=5.6.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a">
+      <HintPath>..\packages\FluentAssertions.5.6.0\lib\net47\FluentAssertions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="mscorlib" />
     <Reference Include="System" />
+    <Reference Include="System, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <HintPath>..\..\..\..\..\usr\lib\mono\gac\System\4.0.0.0__b77a5c561934e089\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Numerics.Vectors" />
+    <Reference Include="System.Text.RegularExpressions, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Text.RegularExpressions.4.3.0\lib\net463\System.Text.RegularExpressions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractStructure\CatClassLoader.cs" />
-    <Compile Include="AbstractStructure\CatObject.cs" />
     <Compile Include="AbstractStructure\CatObjectLoader.cs" />
     <Compile Include="AbstractStructure\CatProperty.cs" />
     <Compile Include="AbstractStructure\CatStructureObject.cs" />
@@ -52,13 +64,23 @@
     <Compile Include="Calculators\Function.cs" />
     <Compile Include="Calculators\Lexer.cs" />
     <Compile Include="CatCore.cs" />
-    <Compile Include="Exceptions\HeapOrderingException.cs" />
-    <Compile Include="Handlers\ExceptionHandler.cs" />
-    <Compile Include="Handlers\HeapHandler.cs" />
-    <Compile Include="Handlers\MethodCaller.cs" />
-    <Compile Include="Handlers\ObjectHandler.cs" />
-    <Compile Include="Handlers\Parsers\ObjectExpressionParser.cs" />
-    <Compile Include="Handlers\TypeHandler.cs" />
+    <Compile Include="Handlers\IndexCreation.cs" />
+    <Compile Include="Handlers\IterateConstruction.cs" />
+    <Compile Include="Handlers\Number.cs" />
+    <Compile Include="Handlers\OperatorExpression.cs" />
+    <Compile Include="Handlers\ClassProperty.cs" />
+    <Compile Include="Handlers\Increment.cs" />
+    <Compile Include="Handlers\InputExpression.cs" />
+    <Compile Include="Handlers\Null.cs" />
+    <Compile Include="Handlers\OutputExpression.cs" />
+    <Compile Include="Handlers\Parsers\IParser.cs" />
+    <Compile Include="Handlers\Parsers\LinearExpressionHandler.cs" />
+    <Compile Include="Handlers\Parsers\RecursiveObjectExpressionParser.cs" />
+    <Compile Include="Handlers\Semicolon.cs" />
+    <Compile Include="Handlers\SetExpression.cs" />
+    <Compile Include="Handlers\SuperKeyWord.cs" />
+    <Compile Include="Handlers\TypeofExpression.cs" />
+    <Compile Include="Handlers\Variable.cs" />
     <Compile Include="Primitives\ByteHandler.cs" />
     <Compile Include="Primitives\CatAngle.cs" />
     <Compile Include="Primitives\CatArray.cs" />
@@ -66,8 +88,13 @@
     <Compile Include="Primitives\CatByte.cs" />
     <Compile Include="Primitives\CatDouble.cs" />
     <Compile Include="Primitives\CatFloat.cs" />
+    <Compile Include="Primitives\CatIndex.cs" />
     <Compile Include="Primitives\CatInt.cs" />
+    <Compile Include="Primitives\CatLink.cs" />
     <Compile Include="Primitives\CatLong.cs" />
+    <Compile Include="Primitives\CatNull.cs" />
+    <Compile Include="Primitives\CatNumber.cs" />
+    <Compile Include="Primitives\CatRange.cs" />
     <Compile Include="Primitives\CatString.cs" />
     <Compile Include="Primitives\Precise\CatAlu.cs" />
     <Compile Include="Primitives\Precise\CatPrecise.cs" />
@@ -78,12 +105,22 @@
     <Compile Include="Structure\CatField.cs" />
     <Compile Include="Structure\CatMethod.cs" />
     <Compile Include="Structure\CatPrimitiveObject.cs" />
+    <Compile Include="Utilities\ExceptionHandler.cs" />
+    <Compile Include="Utilities\HeapHandler.cs" />
+    <Compile Include="Utilities\MethodCaller.cs" />
     <Compile Include="Utilities\MiscUtils.cs" />
+    <Compile Include="Utilities\TypeHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="classes\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Resource Include="classes\main.cls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Content Include="classes/main.cls">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

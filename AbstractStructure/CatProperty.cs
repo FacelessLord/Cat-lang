@@ -9,11 +9,11 @@ namespace Cat.AbstractStructure
 		/// <summary>
 		/// Name of the property
 		/// </summary>
-		public string _name;
+		public string Name;
 
-		public CatProperty(string name, params Modifier[] modifiers) : base(modifiers)
+		public CatProperty(string name,string type, params Modifier[] modifiers) : base(type,modifiers)
 		{
-			_name = name;
+			Name = name;
 		}
 
 		public CatField ToField()

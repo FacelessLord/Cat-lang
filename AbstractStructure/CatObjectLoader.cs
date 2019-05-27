@@ -67,21 +67,21 @@ namespace Cat
 
 		public static int CreateEmptyObject()
 		{
-			var obj = new CatObject("object");
+			var obj = new CatStructureObject("object");
 			return HeapHandler.LoadObjectToHeap(obj);
 		}
 
-		public static int CreateObjectByType(string type, params CatObject[] args)
+		public static int CreateObjectByType(string type, params CatStructureObject[] args)
 		{
 			if (Classes[type] != null)
 			{
 				var clazz = Classes[type];
 				var obj = clazz.CreateObjectFromClass();
-				foreach (var property in obj._properties)
+				foreach (var property in obj.Properties)
 				{
 					if (property is CatConstructor constr)
 					{
-						if (constr._signature == CreateSignatureFromArray(args))
+						if (constr.Signature == CreateSignatureFromArray(args))
 						{
 							MethodCaller.CallMethod(constr);
 							break;
@@ -98,13 +98,13 @@ namespace Cat
 			return L0;
 		}
 
-		public static string[] CreateSignatureFromArray(params CatObject[] args)
+		public static string[] CreateSignatureFromArray(params CatStructureObject[] args)
 		{
 			var sign = new string[args.Length];
 			for (int i = 0; i < args.Length; i++)
 			{
 				var arg = args[i];
-				sign[i] = arg._type;
+				sign[i] = arg.Type;
 			}
 
 			return sign;

@@ -1,9 +1,13 @@
 /home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.csprojAssemblyReference.cache
 /home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.csproj.CoreCompileInputs.cache
-/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/classes/global.cls
-/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/classes/tst.cls
-/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/classes/tst2.cls
 /home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/Cat.exe
 /home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/Cat.pdb
 /home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.exe
 /home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.pdb
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/classes/main.cls
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/System.dll
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/System.Text.RegularExpressions.dll
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/obj/Debug/Cat.csproj.CopyComplete
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/FluentAssertions.dll
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/FluentAssertions.pdb
+/home/lord_faceless/RiderProjects/CalculatorConsole/Cat/bin/Debug/FluentAssertions.xml

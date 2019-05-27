@@ -183,7 +183,7 @@ namespace Cat.Calculators
 
 		protected override byte Call(params byte[] arguments)
 		{
-			return (byte) Math.Pow(arguments[0], arguments[1]);
+			return (byte) System.Math.Pow(arguments[0], arguments[1]);
 		}
 	}
 

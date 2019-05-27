@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Cat.AbstractStructure;
 using static Cat.CatCore;
-using Cat.Exceptions;
 
 namespace Cat.Structure
 {
@@ -11,64 +10,60 @@ namespace Cat.Structure
 	/// </summary>
 	public class CatMethod : CatProperty
 	{
-		/// <summary>
-		/// Name of the field
-		/// </summary>
-		public string _name;
 
 		/// <summary>
 		/// Array of indexes of arguments in Heap
 		/// </summary>
-		public string[] _signature;
+		public string[] Signature;
 
 		/// <summary>
 		/// Index of the return type in Heap
 		/// </summary>
-		public int _returnType;
+		public int ReturnType;
 
 		/// <summary>
 		/// Class name to work in
 		/// </summary>
-		public string _class;
+		public string Class;
 
 		/// <summary>
 		/// Line to start from
 		/// </summary>
-		public int _line;
+		public int Line;
 
 		public CatMethod(string name, string[] signature, int returnType, string linkClass, int line,
-			params Modifier[] modifiers) : base(name, modifiers)
+			params Modifier[] modifiers) : base(name,"method", modifiers)
 		{
-			_signature = signature;
-			_returnType = returnType;
-			_class = linkClass;
-			_line = line;
-			if (!ModifierHandler.IsMethod(_modifiers))
+			Signature = signature;
+			ReturnType = returnType;
+			Class = linkClass;
+			Line = line;
+			if (!ModifierHandler.IsMethod(Modifiers))
 			{
-				_modifiers += (int) Modifier.Method;
+				Modifiers += (int) Modifier.Method;
 			}
 		}
 
 		public CatMethod(string rawSignature, string returnType, string linkClass, int line,
-			params Modifier[] modifiers) : base("", modifiers)
+			params Modifier[] modifiers) : base("","method", modifiers)
 		{
 			var fullSign = ProcessSignature(rawSignature);
-			_name = fullSign.Item1;
-			_signature = fullSign.Item2;
+			Name = fullSign.Item1;
+			Signature = fullSign.Item2;
 			if(returnType != "")
-				_returnType = TypeHandler.GetTypeIndex(returnType);
-			_class = linkClass;
-			_line = line;
+				ReturnType = TypeHandler.GetTypeIndex(returnType);
+			Class = linkClass;
+			Line = line;
 		}
 
 		public override object Clone()
 		{
-			var newSignature = new string[_signature.Length];
-			for (int i = 0; i < _signature.Length; i++)
+			var newSignature = new string[Signature.Length];
+			for (int i = 0; i < Signature.Length; i++)
 			{
-				newSignature[i] = _signature[i];
+				newSignature[i] = Signature[i];
 			}
-			return new CatMethod(_name,newSignature,_returnType,_class,_line){_modifiers = _modifiers};
+			return new CatMethod(Name,newSignature,ReturnType,Class,Line){Modifiers = Modifiers};
 		}
 
 		public static CatMethod NewInstance()
