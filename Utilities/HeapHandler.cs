@@ -1,9 +1,6 @@
-using System;
-using static Cat.CatCore;
-using System.Collections.Generic;
 using Cat.AbstractStructure;
 
-namespace Cat
+namespace Cat.Utilities
 {
 	public static class HeapHandler
 	{
@@ -14,9 +11,9 @@ namespace Cat
 		{
 			var zeroStart = -1;
 
-			for (var i = 0; i < Heap.Count; i++)
+			for (var i = 0; i < CatCore.Heap.Count; i++)
 			{
-				if (Heap[i] is null)
+				if (CatCore.Heap[i] is null)
 				{
 					if (zeroStart == -1)
 						zeroStart = i;
@@ -25,7 +22,7 @@ namespace Cat
 				{
 					if (zeroStart != -1)
 					{
-						Heap.RemoveRange(zeroStart, i - zeroStart);
+						CatCore.Heap.RemoveRange(zeroStart, i - zeroStart);
 						i = zeroStart;
 						zeroStart = -1;
 					}
@@ -34,21 +31,21 @@ namespace Cat
 
 			if (zeroStart != -1)
 			{
-				Heap.RemoveRange(zeroStart, Heap.Count - zeroStart);
+				CatCore.Heap.RemoveRange(zeroStart, CatCore.Heap.Count - zeroStart);
 			}
 		}
 
 		public static int LoadObjectToHeap(CatStructureObject obj)
 		{
-			if (DoesHeapContainSpaces)
+			if (CatCore.DoesHeapContainSpaces)
 			{
 				var bestZeroInARow = 0;
 				var bestZeroIndex = 0;
 				var zeroInARow = 0;
 				var zeroIndex = 0;
-				for (var i = 0; i < Heap.Count; i++)
+				for (var i = 0; i < CatCore.Heap.Count; i++)
 				{
-					if (Heap[i] is null)
+					if (CatCore.Heap[i] is null)
 					{
 						if (zeroInARow == 0)
 							zeroIndex = i;
@@ -68,12 +65,12 @@ namespace Cat
 
 				if (bestZeroInARow >= 1)
 				{
-					Heap[bestZeroIndex] = obj;
+					CatCore.Heap[bestZeroIndex] = obj;
 					return bestZeroIndex;
 				}
 			}
-			var ret = Heap.Count;
-			Heap.Add(obj);
+			var ret = CatCore.Heap.Count;
+			CatCore.Heap.Add(obj);
 			return ret;
 		}
 	}

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Cat.AbstractStructure;
 using Cat.Structure;
+using Cat.Utilities;
 
 namespace Cat.Handlers.Parsers
 {
@@ -79,6 +80,9 @@ namespace Cat.Handlers.Parsers
 
         public static void Run(string expression)
         {
+            List<CatStructureObject> code = ParseLexems(expression);
+            
+            void runStack = new Stack<CatStructureObject>();
         }
 
 

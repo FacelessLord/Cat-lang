@@ -1,20 +1,18 @@
 using System;
-using static Cat.CatCore;
-using System.Collections.Generic;
-using Cat.AbstractStructure;
 using Cat.Primitives;
 using Cat.Primitives.Precise;
 using Cat.Structure;
+using Cat.Utilities;
 
-namespace Cat
+namespace Cat.AbstractStructure
 {
 	public class CatObjectLoader
 	{
 		public static void FinalizeObject(int obj)
 		{
-			Heap[obj] = null;
-			RemoveCount += 1;
-			DoesHeapContainSpaces = true;
+			CatCore.Heap[obj] = null;
+			CatCore.RemoveCount += 1;
+			CatCore.DoesHeapContainSpaces = true;
 		}
 
 		/// <summary>
@@ -73,9 +71,9 @@ namespace Cat
 
 		public static int CreateObjectByType(string type, params CatStructureObject[] args)
 		{
-			if (Classes[type] != null)
+			if (CatCore.Classes[type] != null)
 			{
-				var clazz = Classes[type];
+				var clazz = CatCore.Classes[type];
 				var obj = clazz.CreateObjectFromClass();
 				foreach (var property in obj.Properties)
 				{
@@ -95,7 +93,7 @@ namespace Cat
 
 			ExceptionHandler.ThrowException("TypeExistenceException",
 				"tried to create an instance of not loaded Class");
-			return L0;
+			return CatCore.L0;
 		}
 
 		public static string[] CreateSignatureFromArray(params CatStructureObject[] args)

@@ -1,6 +1,6 @@
 using System;
 
-namespace Cat
+namespace Cat.Utilities
 {
 	public static class ExceptionHandler
 	{

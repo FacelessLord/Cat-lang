@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Cat.AbstractStructure;
 using Cat.Structure;
-using static Cat.CatCore;
+using Cat.Utilities;
 
-namespace Cat
+namespace Cat.AbstractStructure
 {
     public static class CatClassLoader
     {
@@ -138,7 +135,7 @@ namespace Cat
                                 }
 
                                 if (expr == "")
-                                    expr = V0;
+                                    expr = CatCore.V0;
                                 var rawField = new CatField(name.Trim(), type.Trim(),null) {Modifiers = modifiers};//todo null
                                 classProperties.Add(rawField);
                                 j += 4;
@@ -195,7 +192,7 @@ namespace Cat
 
                 var ret = HeapHandler.LoadObjectToHeap(clazz);
 
-                Types.Add(className, ret);
+                CatCore.Types.Add(className, ret);
 
                 foreach (var prop in clazz.Properties)
                 {
@@ -208,7 +205,7 @@ namespace Cat
                 return (clazz,ret);
             }
 
-            return (null,L0);
+            return (null,CatCore.L0);
         }
 
         /// <summary>
@@ -217,8 +214,8 @@ namespace Cat
         /// <param name="className"> Class to unload</param>
         public static void UnloadClass(string className)
         {
-            Types.Remove(className);
-            Classes.Remove(className);
+            CatCore.Types.Remove(className);
+            CatCore.Classes.Remove(className);
         }
     }
 }

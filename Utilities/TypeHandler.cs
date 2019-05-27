@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using Cat.AbstractStructure;
 using Cat.Primitives;
 using Cat.Structure;
 
-namespace Cat
+namespace Cat.Utilities
 {
     public static class TypeHandler
     {

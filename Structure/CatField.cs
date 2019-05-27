@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cat.AbstractStructure;
+using Cat.Utilities;
 using static Cat.CatCore;
 
 namespace Cat.Structure

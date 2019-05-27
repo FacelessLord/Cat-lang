@@ -1,5 +1,6 @@
 using Cat.AbstractStructure;
 using Cat.Handlers;
+using Cat.Utilities;
 
 namespace Cat.Structure
 {

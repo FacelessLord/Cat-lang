@@ -1,6 +1,6 @@
 using Cat.Structure;
 
-namespace Cat
+namespace Cat.Utilities
 {
     public class MethodCaller
     {

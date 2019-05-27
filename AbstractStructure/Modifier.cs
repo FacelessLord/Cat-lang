@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Cat.Structure
+namespace Cat.AbstractStructure
 {
 	public enum Modifier
 	{

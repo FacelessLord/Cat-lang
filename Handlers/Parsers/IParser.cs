@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using Cat.AbstractStructure;
 
-namespace Cat.Handlers
+namespace Cat.Handlers.Parsers
 {
     public interface IParser
     {

@@ -15,5 +15,7 @@ namespace Cat.Structure
 		}
 
 		public Func<List<CatStructureObject>, int, CatStructureObject> Func; //lexems and address
+
+		public int Priority = 0;
 	}
 }
